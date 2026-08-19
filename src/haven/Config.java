@@ -47,7 +47,7 @@ public class Config {
     public static final Variable<Boolean> exp = Variable.propb("haven.experimental", false);
     public static final boolean windows = System.getProperty("os.name", "").startsWith("Windows");
     public final Properties localprops = getlocalprops(), userprops = getuserprops();
-	public static final String clientVersion = "v1.73";
+	public static final String clientVersion = "v1.74";
 	public static String githubLatestVersion = "Loading...";
 
     private static Config global = null;

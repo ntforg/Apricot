@@ -52,7 +52,7 @@ public class Client implements Console.Directory {
         try {
             if (gameDir == null) {
                 if((SteamStore.steamsvc.get() != null) && (Steam.get() != null)) {
-                    gameDir = System.getProperty("user.dir") + File.separator + ".." + File.separator + ".." + File.separator + "workshop" + File.separator + "content" + File.separator + "3051280" + File.separator + "3423755273" + File.separator;
+                    gameDir = System.getProperty("user.dir") + File.separator + ".." + File.separator + ".." + File.separator + "workshop" + File.separator + "content" + File.separator + "3051280" + File.separator + "3786449280" + File.separator;
                 }
                 else {
                     gameDir = "";

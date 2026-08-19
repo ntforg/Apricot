@@ -9,7 +9,7 @@ bigger than that: faster patches, more player suggestions actually making it
 into the client, and general convenience.
 
 The client can be played standalone, or through Steam by subscribing to the
-Steam Workshop item.
+Steam Workshop item: https://steamcommunity.com/sharedfiles/filedetails/?id=3786449280
 
 ## Features
 
