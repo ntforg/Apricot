@@ -1,0 +1,88 @@
+name: Build
+
+# Build the client on every pull request and every push to master.
+# On master, if the clientVersion in src/haven/Config.java has no tag yet,
+# tag the commit and publish a GitHub release with the packaged client.
+# The in-client update check (GitHubVersionFetcher) reads the latest
+# release's tag_name, so publishing the release is what makes new
+# versions show up on the login screen.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Cache external libraries
+        uses: actions/cache@v4
+        with:
+          path: lib/ext
+          key: extlib-${{ hashFiles('build.xml') }}
+
+      - name: Build client
+        run: ant deftgt
+
+      - name: Package client
+        run: |
+          version=$(sed -n 's/.*clientVersion = "\(.*\)".*/\1/p' src/haven/Config.java)
+          echo "version=$version" >> "$GITHUB_ENV"
+          (cd bin && zip -qr "../Thunder-$version.zip" .)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Thunder-${{ env.version }}
+          path: Thunder-${{ env.version }}.zip
+
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for existing tag
+        id: tag
+        run: |
+          version=$(sed -n 's/.*clientVersion = "\(.*\)".*/\1/p' src/haven/Config.java)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code origin "refs/tags/$version" > /dev/null; then
+            echo "Tag $version already exists; skipping release."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/download-artifact@v4
+        if: steps.tag.outputs.exists == 'false'
+        with:
+          name: Thunder-${{ steps.tag.outputs.version }}
+
+      - name: Tag and release
+        if: steps.tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${{ steps.tag.outputs.version }}"
+          gh release create "$version" "Thunder-$version.zip" \
+            --title "$version" \
+            --target "$GITHUB_SHA" \
+            --generate-notes
