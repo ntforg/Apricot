@@ -190,7 +190,7 @@ public class LoginScreen extends Widget {
 		throw(new RuntimeException(e));
 	}
 	mainThemeStopped = false;
-	add(loginScreenMusicVolumeSlider = new HSlider(UI.scale(220), 0, 100, Utils.getprefi("loginScreenMusicVolume", 40)) {
+	add(loginScreenMusicVolumeSlider = new HSlider(UI.scale(220), 0, 100, Utils.getprefi("loginScreenMusicVolume", 0)) {
 		protected void attach(UI ui) {
 			super.attach(ui);
 		}
@@ -251,7 +251,7 @@ public class LoginScreen extends Widget {
 		public void click() {
 			URI uri = null;
 			try {
-				uri = new URI("https://discord.gg/7Ct4t6uME6");
+				uri = new URI("https://discord.gg/qY9py4HvfF");
 			} catch (URISyntaxException e) {
 				return;
 			}
@@ -681,7 +681,7 @@ public class LoginScreen extends Widget {
 	private void playMainTheme(Resource theme) {
 		if (!mainThemeStopped &&(mainThemeClip == null || !ui.globalSfxIsPlaying(mainThemeClip))) {
 				Audio.CS klippi = ee ? fromres(eeTheme) : fromres(theme);
-				mainThemeClip = new Audio.VolAdjust(klippi, Utils.getprefi("loginScreenMusicVolume", 40)/100d);
+				mainThemeClip = new Audio.VolAdjust(klippi, Utils.getprefi("loginScreenMusicVolume", 0)/100d);
                 ui.globalSfxPlay(mainThemeClip);
 		}
 	}

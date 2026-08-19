@@ -173,7 +173,7 @@ public class Charlist extends Widget {
 	parent.resize(UI.scale(new Coord(1067, 600)));
 	charSelectThemeStopped = false;
 	playCharSelectTheme();
-	parent.add(charSelectionScreenVolumeSlider = new HSlider(UI.scale(220), 0, 100, Utils.getprefi("charSelectionScreenVolume", 40)) {
+	parent.add(charSelectionScreenVolumeSlider = new HSlider(UI.scale(220), 0, 100, Utils.getprefi("charSelectionScreenVolume", 0)) {
 		protected void attach(UI ui) {
 			super.attach(ui);
 		}
@@ -353,7 +353,7 @@ public class Charlist extends Widget {
 			Audio.CS klippi = fromres(charSelectTheme);
 			if (Utils.getprefi("backgroundMusicTheme", 0) == 0) klippi = fromres(charSelectTheme);
 			else if (Utils.getprefi("backgroundMusicTheme", 0) == 1) klippi = fromres(charSelectThemeLegacy);
-			charSelectThemeClip = new Audio.VolAdjust(klippi, Utils.getprefi("charSelectionScreenVolume", 40)/100d);
+			charSelectThemeClip = new Audio.VolAdjust(klippi, Utils.getprefi("charSelectionScreenVolume", 0)/100d);
             ui.globalSfxPlay(charSelectThemeClip);
 		}
 	}

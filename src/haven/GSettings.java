@@ -171,7 +171,7 @@ public class GSettings extends State implements Serializable {
 	    public Integer defval() {return(0);}
 	};
     public BoolSetting vsync = new BoolSetting("vsync") {
-	    public Boolean defval() {return(true);}
+	    public Boolean defval() {return(false);}
 	};
     public abstract class HertzSetting extends FloatSetting {
 	public HertzSetting(String nm) {super(nm);}
