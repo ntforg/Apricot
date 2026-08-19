@@ -10,7 +10,10 @@ This client can be played standalone, or through Steam, by subscribing to
 the Steam Workshop item.
 
 Important Note:
-- This client does not send any data to any place besides the official Seatribe server, unless you set it to do so.
+- This client does not send any data to any place besides the official Seatribe server, with one exception:
+  when the client crashes, a crash report (stack trace and system info, shown in the crash dialog) is sent
+  to the Thunder developer so the bug can be fixed. This can be turned off by launching with
+  `-Dhaven.errorurl=stderr`.
 
 ## Downloading/Updating the Thunder Client (Outside of Steam):
 
