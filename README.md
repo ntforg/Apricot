@@ -1,4 +1,4 @@
-# Hurricane Client
+# Thunder Client
 
 This is just another custom client you can use to play the wonderful game,
 Haven & Hearth. This client is built on top of the "Vanilla" Client, and
@@ -23,15 +23,10 @@ https://discord.gg/7Ct4t6uME6
 Steam Workshop:
 https://steamcommunity.com/sharedfiles/filedetails/?id=3423755273
 
-## Downloading/Updating the Hurricane Client (Outside of Steam):
-Use the Hurricane Updater: https://github.com/Nightdawg/Hurricane-Updater/releases/latest/download/HurricaneUpdater.jar
-(Source Code: https://github.com/Nightdawg/Hurricane-Updater)
+## Downloading/Updating the Thunder Client (Outside of Steam):
+Download the latest release from: https://github.com/ntforg/Thunder/releases/latest
 
-### If the updater doesn't work:
-1. Make sure your installed Java version is **any version between Java 17 and Java 25**
-2. You might need to add the updater file (HurricaneUpdater.jar) to your anti-virus exceptions list.
-
-## Launching the Hurricane Client (Outside of Steam):
+## Launching the Thunder Client (Outside of Steam):
 
 Run the Play.bat file inside the client folder, or Play_Linux.sh (for Linux/MacOS)
 

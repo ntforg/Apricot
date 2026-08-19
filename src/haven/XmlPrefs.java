@@ -247,7 +247,7 @@ public class XmlPrefs extends AbstractPreferences {
 	    tmp = Files.createTempFile((dir == null) ? Paths.get(".") : dir, path.getFileName().toString(), ".tmp");
 	    try(FileChannel ch = FileChannel.open(tmp, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 		OutputStream fp = Channels.newOutputStream(ch)) {
-		src.storeToXML(fp, "Hurricane preferences", "UTF-8");
+		src.storeToXML(fp, "Thunder preferences", "UTF-8");
 		fp.flush();
 		ch.force(true);
 	    }

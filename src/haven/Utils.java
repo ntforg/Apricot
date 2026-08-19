@@ -390,7 +390,7 @@ public class Utils {
 	}
     }
 
-    public static final Config.Variable<String> prefspec = Config.Variable.prop("haven.prefspec", "hafen-Hurricane");
+    public static final Config.Variable<String> prefspec = Config.Variable.prop("haven.prefspec", "hafen-Thunder");
     public static Preferences prefs() {
 	if(prefs == null) {
 	    synchronized(Utils.class) {
@@ -406,7 +406,7 @@ public class Utils {
 			if(base == null) {
 			    prefs = node;
 			} else {
-			    prefs = XmlPrefs.create(Utils.pj(base, "Hurricane-prefs.xml"), node);
+			    prefs = XmlPrefs.create(Utils.pj(base, "Thunder-prefs.xml"), node);
 			}
 		    }
 		}

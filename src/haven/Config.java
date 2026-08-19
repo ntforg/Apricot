@@ -39,7 +39,7 @@ import java.io.PrintStream;
 
 public class Config {
     public static final Properties jarprops = getjarprops();
-    public static final String confid = "Hurricane";
+    public static final String confid = "Thunder";
     public static final Variable<Boolean> par = Variable.def(() -> true);
     public static final Variable<Boolean> exp = Variable.propb("haven.experimental", false);
     public static final boolean windows = System.getProperty("os.name", "").startsWith("Windows");
