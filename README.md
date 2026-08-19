@@ -24,7 +24,17 @@ Steam Workshop:
 https://steamcommunity.com/sharedfiles/filedetails/?id=3423755273
 
 ## Downloading/Updating the Thunder Client (Outside of Steam):
-Download the latest release from: https://github.com/ntforg/Thunder/releases/latest
+
+The easiest way is the Thunder Launcher — a small script that downloads the client,
+keeps it up to date, and launches it. Put it in its own folder and run it; the client
+is installed into a `Thunder` subfolder next to it.
+
+- Windows: https://github.com/ntforg/Thunder/releases/latest/download/ThunderLauncher.bat
+- Linux: https://github.com/ntforg/Thunder/releases/latest/download/ThunderLauncher.sh
+
+You might need to add ThunderLauncher.bat to your anti-virus exceptions list.
+
+Or download a release manually from: https://github.com/ntforg/Thunder/releases/latest
 
 The Windows and Linux downloads come with Java 25 bundled — no Java installation needed.
 The plain zip requires an installed Java, **any version between Java 17 and Java 25**.

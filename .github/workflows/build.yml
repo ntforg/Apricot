@@ -113,7 +113,9 @@ jobs:
             "Thunder-$version-windows-x64.zip" \
             "Thunder-$version-linux-x64.tar.gz" \
             "Thunder-$version.zip" \
+            "ThunderLauncher.bat" \
+            "ThunderLauncher.sh" \
             --title "$version" \
             --target "$GITHUB_SHA" \
             --generate-notes \
-            --notes "Windows and Linux downloads include Java 25 (Temurin) — no Java installation needed. The plain zip requires an installed Java 17-25."
+            --notes "New here? Grab ThunderLauncher.bat (Windows) or ThunderLauncher.sh (Linux) — it downloads the client and keeps it up to date. The Windows and Linux packages include Java 25 (Temurin), no Java installation needed. The plain zip requires an installed Java 17-25."
