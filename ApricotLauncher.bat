@@ -1,15 +1,15 @@
 @echo off
 setlocal EnableExtensions
 rem ============================================================
-rem  Thunder Launcher
-rem  Downloads the Thunder client from GitHub, keeps it up to
+rem  Apricot Launcher
+rem  Downloads the Apricot client from GitHub, keeps it up to
 rem  date, and launches it. Put this file in its own folder;
-rem  the client is installed into a "Thunder" subfolder.
+rem  the client is installed into a "Apricot" subfolder.
 rem ============================================================
-set "REPO=ntforg/Thunder"
-set "INSTALLDIR=%~dp0Thunder"
+set "REPO=ntforg/Apricot"
+set "INSTALLDIR=%~dp0Apricot"
 
-echo Thunder Launcher
+echo Apricot Launcher
 echo ================
 
 rem Look up the latest release tag on GitHub.
@@ -35,9 +35,9 @@ if "%CURRENT%"=="%LATEST%" (
     goto launch
 )
 
-echo Downloading Thunder %LATEST%...
-set "ZIP=%TEMP%\Thunder-%LATEST%-windows-x64.zip"
-curl -f -# -L -o "%ZIP%" "https://github.com/%REPO%/releases/download/%LATEST%/Thunder-%LATEST%-windows-x64.zip"
+echo Downloading Apricot %LATEST%...
+set "ZIP=%TEMP%\Apricot-%LATEST%-windows-x64.zip"
+curl -f -# -L -o "%ZIP%" "https://github.com/%REPO%/releases/download/%LATEST%/Apricot-%LATEST%-windows-x64.zip"
 if errorlevel 1 (
     echo Download failed.
     if exist "%INSTALLDIR%\Play.bat" (

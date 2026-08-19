@@ -43,12 +43,12 @@ jobs:
         run: |
           version=$(sed -n 's/.*clientVersion = "\(.*\)".*/\1/p' src/haven/Config.java)
           echo "version=$version" >> "$GITHUB_ENV"
-          (cd bin && zip -qr "../Thunder-$version.zip" .)
+          (cd bin && zip -qr "../Apricot-$version.zip" .)
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Thunder-${{ env.version }}
-          path: Thunder-${{ env.version }}.zip
+          name: Apricot-${{ env.version }}
+          path: Apricot-${{ env.version }}.zip
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -77,7 +77,7 @@ jobs:
       - uses: actions/download-artifact@v4
         if: steps.tag.outputs.exists == 'false'
         with:
-          name: Thunder-${{ steps.tag.outputs.version }}
+          name: Apricot-${{ steps.tag.outputs.version }}
 
       - name: Bundle Java runtime
         if: steps.tag.outputs.exists == 'false'
@@ -88,14 +88,14 @@ jobs:
           JAVA_IMAGE: jdk
         run: |
           version="${{ steps.tag.outputs.version }}"
-          mkdir client && unzip -q "Thunder-$version.zip" -d client
+          mkdir client && unzip -q "Apricot-$version.zip" -d client
 
           # Windows x64 bundle
           curl -sSfL -o java-windows.zip \
             "$JAVA_URL_BASE/windows/x64/$JAVA_IMAGE/hotspot/normal/eclipse"
           mkdir java-windows && unzip -q java-windows.zip -d java-windows
           mv java-windows/jdk-* client/jre
-          (cd client && zip -qr "../Thunder-$version-windows-x64.zip" .)
+          (cd client && zip -qr "../Apricot-$version-windows-x64.zip" .)
           rm -rf client/jre
 
           # Linux x64 bundle (tar.gz to preserve execute permissions)
@@ -104,7 +104,7 @@ jobs:
           mkdir java-linux && tar -xzf java-linux.tar.gz -C java-linux
           mv java-linux/jdk-* client/jre
           chmod +x client/Play_Linux.sh client/hafen.jar
-          tar -czf "Thunder-$version-linux-x64.tar.gz" -C client .
+          tar -czf "Apricot-$version-linux-x64.tar.gz" -C client .
 
       - name: Tag and release
         if: steps.tag.outputs.exists == 'false'
@@ -113,15 +113,15 @@ jobs:
         run: |
           version="${{ steps.tag.outputs.version }}"
           gh release create "$version" \
-            "Thunder-$version-windows-x64.zip" \
-            "Thunder-$version-linux-x64.tar.gz" \
-            "Thunder-$version.zip" \
-            "ThunderLauncher.bat" \
-            "ThunderLauncher.sh" \
+            "Apricot-$version-windows-x64.zip" \
+            "Apricot-$version-linux-x64.tar.gz" \
+            "Apricot-$version.zip" \
+            "ApricotLauncher.bat" \
+            "ApricotLauncher.sh" \
             --title "$version" \
             --target "$GITHUB_SHA" \
             --generate-notes \
-            --notes "New here? Grab ThunderLauncher.bat (Windows) or ThunderLauncher.sh (Linux) — it downloads the client and keeps it up to date. The Windows and Linux packages include Java 25 (Temurin), no Java installation needed. The plain zip requires an installed Java 17-25."
+            --notes "New here? Grab ApricotLauncher.bat (Windows) or ApricotLauncher.sh (Linux) — it downloads the client and keeps it up to date. The Windows and Linux packages include Java 25 (Temurin), no Java installation needed. The plain zip requires an installed Java 17-25."
 
       - name: Announce release on Discord
         if: steps.tag.outputs.exists == 'false'
@@ -144,10 +144,10 @@ jobs:
           fi
           desc=$(printf '%s\n%s' "$header" "$log" | head -c 3900)
           jq -n \
-            --arg title "Thunder $version is out! ⚡" \
+            --arg title "Apricot $version is out! 🍑" \
             --arg url "https://github.com/${{ github.repository }}/releases/tag/$version" \
             --arg desc "$desc" \
-            --arg downloads "[Thunder Launcher (Windows)](https://github.com/${{ github.repository }}/releases/latest/download/ThunderLauncher.bat) · [Thunder Launcher (Linux)](https://github.com/${{ github.repository }}/releases/latest/download/ThunderLauncher.sh) · [All downloads](https://github.com/${{ github.repository }}/releases/latest)" \
+            --arg downloads "[Apricot Launcher (Windows)](https://github.com/${{ github.repository }}/releases/latest/download/ApricotLauncher.bat) · [Apricot Launcher (Linux)](https://github.com/${{ github.repository }}/releases/latest/download/ApricotLauncher.sh) · [All downloads](https://github.com/${{ github.repository }}/releases/latest)" \
             '{embeds: [{
                title: $title,
                url: $url,

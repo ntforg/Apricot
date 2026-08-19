@@ -39,15 +39,15 @@ import java.io.PrintStream;
 
 public class Config {
     public static final Properties jarprops = getjarprops();
-    public static final String confid = "Thunder";
-    /* Default crash-report destination: the Thunder Discord error channel.
+    public static final String confid = "Apricot";
+    /* Default crash-report destination: the Apricot Discord error channel.
      * Overridable with -Dhaven.errorurl (a report server URL, or "stderr"). */
     public static final String defaultErrorWebhook = "https://discord.com/api/webhooks/1539580301670617180/22lN3VVCjUtSwI1bvpAhcvYl_7Yo-Wh0TDomrPmQdjgR8aZRzYSqxLgN0MuuF-WyaiMG";
     public static final Variable<Boolean> par = Variable.def(() -> true);
     public static final Variable<Boolean> exp = Variable.propb("haven.experimental", false);
     public static final boolean windows = System.getProperty("os.name", "").startsWith("Windows");
     public final Properties localprops = getlocalprops(), userprops = getuserprops();
-	public static final String clientVersion = "v1.74";
+	public static final String clientVersion = "v1.75";
 	public static String githubLatestVersion = "Loading...";
 
     private static Config global = null;

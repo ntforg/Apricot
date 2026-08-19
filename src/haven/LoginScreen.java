@@ -238,7 +238,7 @@ public class LoginScreen extends Widget {
 		}
 	};
 	Config.githubLatestVersion = "Loading...";
-	GitHubVersionFetcher.fetchLatestVersion("ntforg", "Thunder", new GitHubVersionFetcher.VersionCallback() {
+	GitHubVersionFetcher.fetchLatestVersion("ntforg", "Apricot", new GitHubVersionFetcher.VersionCallback() {
 		@Override
 		public void onVersionFetched(String version) {
 			Config.githubLatestVersion = version; // Update immediately upon response
@@ -247,7 +247,7 @@ public class LoginScreen extends Widget {
 	GameUI.verifiedAccount = false;
 	GameUI.subscribedAccount = false;
 	add(new IButton("customclient/discord", "", "-d", "-h") {
-		{settip("Thunder Client Discord");}
+		{settip("Apricot Client Discord");}
 		public void click() {
 			URI uri = null;
 			try {
@@ -705,7 +705,7 @@ public class LoginScreen extends Widget {
 		firstTimeUseWindow = new Window(Coord.z, "Hey!", true) {
 			{
 				Widget prev;
-				prev = add(new Label("This is your first time launching Thunder!"), UI.scale(new Coord(34, 3)));
+				prev = add(new Label("This is your first time launching Apricot!"), UI.scale(new Coord(34, 3)));
 				prev = add(new Label("Please make sure to set up your Keybindings and Settings!"), prev.pos("bl").adds(0, 8).xs(0));
 				prev = add(new Label("The default ones are what Nightdawg uses."), prev.pos("bl").adds(0, 8).xs(34));
 				Button close = new Button(UI.scale(120), "Okay!", false) {

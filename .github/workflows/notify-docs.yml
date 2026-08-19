@@ -1,10 +1,10 @@
 name: Notify docs on release
 
-# When a new Thunder release is published, ping the ThunderDocs repo so it
+# When a new Apricot release is published, ping the ApricotDocs repo so it
 # rebuilds and regenerates its auto-generated Changelog page.
 #
 # Requires a repository secret named DOCS_DISPATCH_TOKEN: a token that can write
-# to the ntforg/ThunderDocs repo (a fine-grained PAT scoped to ThunderDocs
+# to the ntforg/ApricotDocs repo (a fine-grained PAT scoped to ApricotDocs
 # with "Contents: read and write", or a classic PAT with the "repo" scope).
 
 on:
@@ -15,11 +15,11 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger ThunderDocs rebuild
+      - name: Trigger ApricotDocs rebuild
         run: |
           curl -sS -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.DOCS_DISPATCH_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/ntforg/ThunderDocs/dispatches \
+            https://api.github.com/repos/ntforg/ApricotDocs/dispatches \
             -d '{"event_type":"new-release"}'

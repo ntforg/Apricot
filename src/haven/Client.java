@@ -216,9 +216,9 @@ public class Client implements Console.Directory {
 		    fun = new Bootstrap();
 		String t= fun.title();
 		if(t == null)
-		    wnd.title("Thunder (" + Config.clientVersion + ")");
+		    wnd.title("Apricot (" + Config.clientVersion + ")");
 		else
-		    wnd.title("Thunder (" + Config.clientVersion + ") \u2013 " + t);
+		    wnd.title("Apricot (" + Config.clientVersion + ") \u2013 " + t);
 		fun = fun.run(newui(fun));
 	    }
 	}

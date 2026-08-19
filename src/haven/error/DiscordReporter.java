@@ -43,7 +43,7 @@ public class DiscordReporter {
 	json.append(field("Thread", str(r.props.get("thnm"))));
 	json.append("]}]}");
 
-	String boundary = "----thunder" + Long.toHexString(System.nanoTime());
+	String boundary = "----apricot" + Long.toHexString(System.nanoTime());
 	HttpURLConnection c = (HttpURLConnection)webhook.openConnection();
 	c.setConnectTimeout(10000);
 	c.setReadTimeout(10000);
@@ -57,7 +57,7 @@ public class DiscordReporter {
 	    w.write("Content-Type: application/json\r\n\r\n");
 	    w.write(json.toString());
 	    w.write("\r\n--" + boundary + "\r\n");
-	    w.write("Content-Disposition: form-data; name=\"files[0]\"; filename=\"thunder-crash-" + r.time + ".txt\"\r\n");
+	    w.write("Content-Disposition: form-data; name=\"files[0]\"; filename=\"apricot-crash-" + r.time + ".txt\"\r\n");
 	    w.write("Content-Type: text/plain\r\n\r\n");
 	    w.write(fullreport(r, trace));
 	    w.write("\r\n--" + boundary + "--\r\n");
@@ -71,7 +71,7 @@ public class DiscordReporter {
 
     private static String fullreport(Report r, String trace) {
 	StringBuilder buf = new StringBuilder();
-	buf.append("Thunder crash report — ").append(new Date(r.time)).append('\n');
+	buf.append("Apricot crash report — ").append(new Date(r.time)).append('\n');
 	buf.append('\n');
 	List<String> keys = new ArrayList<>();
 	for(Object k : r.props.keySet())

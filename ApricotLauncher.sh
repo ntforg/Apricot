@@ -1,19 +1,19 @@
 #!/bin/bash
 # ============================================================
-#  Thunder Launcher (Linux/macOS)
-#  Downloads the Thunder client from GitHub, keeps it up to
+#  Apricot Launcher (Linux/macOS)
+#  Downloads the Apricot client from GitHub, keeps it up to
 #  date, and launches it. Put this file in its own folder;
-#  the client is installed into a "Thunder" subfolder.
+#  the client is installed into a "Apricot" subfolder.
 #
 #  Note: the Linux package bundles a Linux x64 Java runtime.
 #  On macOS the bundled runtime is ignored and the client
 #  falls back to your system Java (17-25).
 # ============================================================
 set -u
-REPO=ntforg/Thunder
-INSTALLDIR="$(cd "$(dirname "$0")" && pwd)/Thunder"
+REPO=ntforg/Apricot
+INSTALLDIR="$(cd "$(dirname "$0")" && pwd)/Apricot"
 
-echo "Thunder Launcher"
+echo "Apricot Launcher"
 echo "================"
 
 latest=$(curl -sSf "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null \
@@ -32,9 +32,9 @@ if [ -z "$latest" ]; then
 elif [ "$current" = "$latest" ]; then
     echo "Client is up to date ($current)."
 else
-    echo "Downloading Thunder $latest..."
-    tmp=$(mktemp /tmp/thunder-update-XXXXXX.tar.gz)
-    if curl -fL -o "$tmp" "https://github.com/$REPO/releases/download/$latest/Thunder-$latest-linux-x64.tar.gz"; then
+    echo "Downloading Apricot $latest..."
+    tmp=$(mktemp /tmp/apricot-update-XXXXXX.tar.gz)
+    if curl -fL -o "$tmp" "https://github.com/$REPO/releases/download/$latest/Apricot-$latest-linux-x64.tar.gz"; then
         echo "Extracting..."
         mkdir -p "$INSTALLDIR"
         if tar -xzf "$tmp" -C "$INSTALLDIR"; then

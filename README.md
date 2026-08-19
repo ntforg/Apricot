@@ -1,8 +1,8 @@
-![Thunder](etc/banner.png)
+![Apricot](etc/banner.png)
 
-# Thunder Client
+# Apricot Client
 
-Thunder is a custom client for the wonderful game Haven & Hearth, based on the
+Apricot is a custom client for the wonderful game Haven & Hearth, based on the
 Hurricane client (which itself builds on the vanilla client). The main reason it
 exists is Cookbook integration, which Hurricane doesn't have, but the goal is
 bigger than that: faster patches, more player suggestions actually making it
@@ -26,26 +26,26 @@ Suggestions and support: https://discord.gg/qY9py4HvfF
 Important note:
 - This client does not send any data to any place besides the official Seatribe server, with one exception:
   when the client crashes, a crash report (stack trace and system info, shown in the crash dialog) is sent
-  to the Thunder developer so the bug can be fixed. This can be turned off by launching with
+  to the Apricot developer so the bug can be fixed. This can be turned off by launching with
   `-Dhaven.errorurl=stderr`.
 
-## Downloading/Updating the Thunder Client (Outside of Steam):
+## Downloading/Updating the Apricot Client (Outside of Steam):
 
-The easiest way is the Thunder Launcher, a small script that downloads the client,
+The easiest way is the Apricot Launcher, a small script that downloads the client,
 keeps it up to date, and launches it. Put it in its own folder and run it; the client
-is installed into a `Thunder` subfolder next to it.
+is installed into an `Apricot` subfolder next to it.
 
-- Windows: https://github.com/ntforg/Thunder/releases/latest/download/ThunderLauncher.bat
-- Linux: https://github.com/ntforg/Thunder/releases/latest/download/ThunderLauncher.sh
+- Windows: https://github.com/ntforg/Apricot/releases/latest/download/ApricotLauncher.bat
+- Linux: https://github.com/ntforg/Apricot/releases/latest/download/ApricotLauncher.sh
 
-You might need to add ThunderLauncher.bat to your anti-virus exceptions list.
+You might need to add ApricotLauncher.bat to your anti-virus exceptions list.
 
-Or download a release manually from: https://github.com/ntforg/Thunder/releases/latest
+Or download a release manually from: https://github.com/ntforg/Apricot/releases/latest
 
 The Windows and Linux downloads come with Java 25 bundled, so no Java installation is needed.
 The plain zip requires an installed Java, **any version between Java 17 and Java 25**.
 
-## Launching the Thunder Client (Outside of Steam):
+## Launching the Apricot Client (Outside of Steam):
 
 Run the Play.bat file inside the client folder, or Play_Linux.sh (for Linux/MacOS)
 
@@ -71,4 +71,4 @@ cookbook such as https://cookbook.kittenrider.com/, or host your own
 
 ---
 
-Thunder is not affiliated with Nightdawg or Hurricane.
+Apricot is not affiliated with Nightdawg or Hurricane.

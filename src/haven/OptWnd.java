@@ -506,7 +506,7 @@ public class OptWnd extends Window {
 			}
 		}, leftColumn.pos("bl").adds(0, 2));
 		leftColumn = add(new Label("Background Music Theme:"), leftColumn.pos("bl").adds(0, 6).x(0));
-		List<String> musicThemes = Arrays.asList("Thunder  ", "Legacy");
+		List<String> musicThemes = Arrays.asList("Apricot  ", "Legacy");
 		add(new OldDropBox<String>(musicThemes.size(), musicThemes) {
 			{
 				super.change(musicThemes.get(Utils.getprefi("backgroundMusicTheme", 0)));

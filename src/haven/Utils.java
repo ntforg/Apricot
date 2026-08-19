@@ -391,7 +391,7 @@ public class Utils {
     }
 
     /* Kept as "hafen-Hurricane" so settings from installs that predate
-     * the Thunder rename (and pre-XmlPrefs installs whose settings live
+     * the Apricot rename (and pre-XmlPrefs installs whose settings live
      * in this registry node) still carry over. */
     public static final Config.Variable<String> prefspec = Config.Variable.prop("haven.prefspec", "hafen-Hurricane");
     public static Preferences prefs() {
@@ -409,14 +409,20 @@ public class Utils {
 			if(base == null) {
 			    prefs = node;
 			} else {
-			    Path preffile = Utils.pj(base, "Thunder-prefs.xml");
-			    Path oldpreffile = Utils.pj(base, "Hurricane-prefs.xml");
-			    /* Carry settings over from before the Thunder rename. */
-			    if(!Files.exists(preffile) && Files.exists(oldpreffile)) {
-				try {
-				    Files.copy(oldpreffile, preffile);
-				} catch(IOException e) {
-				    new Warning(e, "could not migrate old preferences file").issue();
+			    Path preffile = Utils.pj(base, "Apricot-prefs.xml");
+			    /* Carry settings over from before the renames:
+			     * Thunder first (newer), then Hurricane. */
+			    if(!Files.exists(preffile)) {
+				for(String old : new String[] {"Thunder-prefs.xml", "Hurricane-prefs.xml"}) {
+				    Path oldpreffile = Utils.pj(base, old);
+				    if(Files.exists(oldpreffile)) {
+					try {
+					    Files.copy(oldpreffile, preffile);
+					} catch(IOException e) {
+					    new Warning(e, "could not migrate old preferences file").issue();
+					}
+					break;
+				    }
 				}
 			    }
 			    prefs = XmlPrefs.create(preffile, node);
