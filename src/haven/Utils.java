@@ -390,7 +390,10 @@ public class Utils {
 	}
     }
 
-    public static final Config.Variable<String> prefspec = Config.Variable.prop("haven.prefspec", "hafen-Thunder");
+    /* Kept as "hafen-Hurricane" so settings from installs that predate
+     * the Thunder rename (and pre-XmlPrefs installs whose settings live
+     * in this registry node) still carry over. */
+    public static final Config.Variable<String> prefspec = Config.Variable.prop("haven.prefspec", "hafen-Hurricane");
     public static Preferences prefs() {
 	if(prefs == null) {
 	    synchronized(Utils.class) {
@@ -406,7 +409,17 @@ public class Utils {
 			if(base == null) {
 			    prefs = node;
 			} else {
-			    prefs = XmlPrefs.create(Utils.pj(base, "Thunder-prefs.xml"), node);
+			    Path preffile = Utils.pj(base, "Thunder-prefs.xml");
+			    Path oldpreffile = Utils.pj(base, "Hurricane-prefs.xml");
+			    /* Carry settings over from before the Thunder rename. */
+			    if(!Files.exists(preffile) && Files.exists(oldpreffile)) {
+				try {
+				    Files.copy(oldpreffile, preffile);
+				} catch(IOException e) {
+				    new Warning(e, "could not migrate old preferences file").issue();
+				}
+			    }
+			    prefs = XmlPrefs.create(preffile, node);
 			}
 		    }
 		}
