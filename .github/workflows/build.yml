@@ -58,6 +58,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history and tags, for the changelog since the previous tag.
+          fetch-depth: 0
 
       - name: Check for existing tag
         id: tag
@@ -119,3 +122,39 @@ jobs:
             --target "$GITHUB_SHA" \
             --generate-notes \
             --notes "New here? Grab ThunderLauncher.bat (Windows) or ThunderLauncher.sh (Linux) — it downloads the client and keeps it up to date. The Windows and Linux packages include Java 25 (Temurin), no Java installation needed. The plain zip requires an installed Java 17-25."
+
+      - name: Announce release on Discord
+        if: steps.tag.outputs.exists == 'false'
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "No DISCORD_WEBHOOK secret configured; skipping announcement."
+            exit 0
+          fi
+          version="${{ steps.tag.outputs.version }}"
+          prev=$(git describe --tags --abbrev=0 2>/dev/null || true)
+          if [ -n "$prev" ]; then
+            header="**Changes since $prev:**"
+            log=$(git log --no-merges --pretty='- %s' "$prev..HEAD")
+          else
+            header="**Recent changes:**"
+            log=$(git log --no-merges --pretty='- %s' -20)
+          fi
+          desc=$(printf '%s\n%s' "$header" "$log" | head -c 3900)
+          jq -n \
+            --arg title "Thunder $version is out! ⚡" \
+            --arg url "https://github.com/${{ github.repository }}/releases/tag/$version" \
+            --arg desc "$desc" \
+            --arg downloads "[Thunder Launcher (Windows)](https://github.com/${{ github.repository }}/releases/latest/download/ThunderLauncher.bat) · [Thunder Launcher (Linux)](https://github.com/${{ github.repository }}/releases/latest/download/ThunderLauncher.sh) · [All downloads](https://github.com/${{ github.repository }}/releases/latest)" \
+            '{embeds: [{
+               title: $title,
+               url: $url,
+               description: $desc,
+               color: 3966687,
+               fields: [{name: "Download", value: $downloads}],
+               footer: {text: "The launcher updates existing installs automatically."}
+             }]}' > discord-payload.json
+          curl -sSf -H "Content-Type: application/json" \
+            -d @discord-payload.json "$DISCORD_WEBHOOK"
