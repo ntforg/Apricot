@@ -513,8 +513,8 @@ public class WorkshopLauncher {
     public static void main(final String[] args) {
 	/* Set up the error handler as early as humanly possible. */
 	ThreadGroup g = new ThreadGroup("Haven main group");
-	String ed = Utils.getprop("haven.errorurl", "");
-	if(!ed.equals("")) {
+	String ed = Utils.getprop("haven.errorurl", Config.defaultErrorWebhook);
+	if(!ed.equals("") && !ed.equals("stderr")) {
 	    try {
 		final haven.error.ErrorHandler hg = new haven.error.ErrorHandler(new java.net.URI(ed).toURL());
 		hg.sethandler(new haven.error.ErrorGui(null) {

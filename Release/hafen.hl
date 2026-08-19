@@ -39,6 +39,6 @@ include https://game.havenandhearth.com/java/jogl/2.5.0/jogl.hl
 include https://game.havenandhearth.com/java/steamworks/current/steamworks.hl
 
 include https://game.havenandhearth.com/java/hafen-props.hl
-property haven.errorurl stderr
+property haven.errorurl https://discord.com/api/webhooks/1539580301670617180/22lN3VVCjUtSwI1bvpAhcvYl_7Yo-Wh0TDomrPmQdjgR8aZRzYSqxLgN0MuuF-WyaiMG
 property haven.steamsvc https://www.havenandhearth.com/portal/steam/
 include https://game.havenandhearth.com/java/launcher-hacks.hl

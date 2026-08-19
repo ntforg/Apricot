@@ -95,6 +95,13 @@ public class ErrorHandler extends ThreadGroup {
 	private void doreport(Report r) throws IOException {
 	    if(!status.goterror(r.t))
 		return;
+	    if(errordest.getHost().equals("discord.com")) {
+		status.connecting();
+		status.sending();
+		DiscordReporter.send(errordest, r);
+		status.done(null, null);
+		return;
+	    }
 	    URLConnection c = errordest.openConnection();
 	    status.connecting();
 	    c.setDoOutput(true);
