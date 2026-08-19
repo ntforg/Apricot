@@ -12,17 +12,6 @@ the Steam Workshop item.
 Important Note:
 - This client does not send any data to any place besides the official Seatribe server, unless you set it to do so.
 
-## Links:
-
-Forum Thread:
-https://www.havenandhearth.com/forum/viewtopic.php?t=76544
-
-Discord Server:
-https://discord.gg/7Ct4t6uME6
-
-Steam Workshop:
-https://steamcommunity.com/sharedfiles/filedetails/?id=3423755273
-
 ## Downloading/Updating the Thunder Client (Outside of Steam):
 
 The easiest way is the Thunder Launcher — a small script that downloads the client,
