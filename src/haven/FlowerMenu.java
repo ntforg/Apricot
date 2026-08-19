@@ -53,8 +53,15 @@ public class FlowerMenu extends Widget {
 	public static final Color ptcStroke = Color.BLACK;
 	private static String nextAutoSel;
 	public final String[] options;
-	private static final String DATABASE = "jdbc:sqlite:static_data.db";
 	public static Map<String, Boolean> autoSelectMap = new TreeMap<>();
+
+	/* Auto-select choices live in the flowerAutoSelect node of the
+	 * regular preferences; older versions kept them in a stray
+	 * static_data.db SQLite file next to the client, which is
+	 * migrated and deleted on startup. */
+	private static java.util.prefs.Preferences autoselprefs() {
+		return(Utils.prefs().node("flowerAutoSelect"));
+	}
 
     @RName("sm")
     public static class $_ implements Factory {
@@ -358,15 +365,18 @@ public class FlowerMenu extends Widget {
 
 	public static void updateValue(String name, boolean value) {
 		autoSelectMap.put(name, value);
-		updateDbValue(name, value);
+		try {
+			autoselprefs().putBoolean(name, value);
+		} catch (Exception e) {
+			System.out.println("Problem with saving flower menu option: " + e);
+		}
 	}
 
 	private void addOptionsToDatabase(String[] options) {
 		try {
 			for (String option : options) {
 				if (autoSelectMap.get(option) == null) {
-					autoSelectMap.put(option, false);
-					checkAndInsertFlowerMenuOption(option);
+					updateValue(option, false);
 					if (OptWnd.flowerMenuAutoSelectManagerWindow != null) {
 						OptWnd.flowerMenuAutoSelectManagerWindow.refresh();
 					}
@@ -376,82 +386,40 @@ public class FlowerMenu extends Widget {
 		}
 	}
 
-
-
-	public static void updateDbValue(String flowerMenuOptionName, boolean newValue) {
-		try (java.sql.Connection conn = DriverManager.getConnection(DATABASE)) {
-			String updateSql = "UPDATE flower_menu_options SET auto_use = ? WHERE name = ?";
-			try (PreparedStatement updatePstmt = conn.prepareStatement(updateSql)) {
-				updatePstmt.setBoolean(1, newValue);
-				updatePstmt.setString(2, flowerMenuOptionName);
-				updatePstmt.executeUpdate();
-			}
-		} catch (SQLException e) {
-			System.out.println("Problem with updating flower menu option in the database.");
+	public static void loadAutoChooseMap() {
+		migrateOldDatabase();
+		try {
+			java.util.prefs.Preferences node = autoselprefs();
+			for (String name : node.keys())
+				autoSelectMap.put(name, node.getBoolean(name, false));
+		} catch (Exception e) {
+			System.out.println("Problem with loading flower menu options: " + e);
 		}
 	}
 
-	private static void checkAndInsertFlowerMenuOption(String flowerMenuOptionName) {
-		try (java.sql.Connection conn = DriverManager.getConnection(DATABASE)) {
-			String checkSql = "SELECT count(*) FROM flower_menu_options WHERE name = ?";
-			try (PreparedStatement pstmt = conn.prepareStatement(checkSql)) {
-				pstmt.setString(1, flowerMenuOptionName);
-				ResultSet rs = pstmt.executeQuery();
-				if (rs.getInt(1) == 0) { // if record doesn't exist
-					String insertSql = "INSERT INTO flower_menu_options(name) VALUES(?)";
-					try (PreparedStatement insertPstmt = conn.prepareStatement(insertSql)) {
-						insertPstmt.setString(1, flowerMenuOptionName);
-						insertPstmt.executeUpdate();
-					}
-				}
-			}
-		} catch (SQLException ignored) {
-			System.out.println("Problem with inserting flower menu option to database.");
-		}
-	}
-
-	public static void fillAutoChooseMap() {
-		String sql = "SELECT name, auto_use FROM flower_menu_options order by name";
-		try (java.sql.Connection conn = DriverManager.getConnection(DATABASE);
-			 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	/* One-time import from the pre-v1.73 static_data.db, which is
+	 * deleted afterwards. */
+	private static void migrateOldDatabase() {
+		java.nio.file.Path db = java.nio.file.Paths.get("static_data.db");
+		if (!java.nio.file.Files.exists(db))
+			return;
+		try (java.sql.Connection conn = DriverManager.getConnection("jdbc:sqlite:static_data.db");
+			 PreparedStatement pstmt = conn.prepareStatement("SELECT name, auto_use FROM flower_menu_options")) {
+			java.util.prefs.Preferences node = autoselprefs();
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				String name = rs.getString("name");
-				boolean autoUse = rs.getBoolean("auto_use");
-				autoSelectMap.put(name, autoUse);
+				if ((name != null) && !name.isEmpty() && (name.length() <= java.util.prefs.Preferences.MAX_KEY_LENGTH) && (node.get(name, null) == null))
+					node.putBoolean(name, rs.getBoolean("auto_use"));
 			}
-		} catch (SQLException e) {
-			System.out.println("Problem with fetching flower menu options from database.");
+			System.out.println("Migrated flower menu options from static_data.db to preferences.");
+		} catch (Exception e) {
+			System.out.println("Problem with migrating flower menu options from static_data.db: " + e);
 		}
-	}
-
-	public static void createDatabaseIfNotExist() throws SQLException {
-		try (java.sql.Connection conn = DriverManager.getConnection(DATABASE)) {
-			if (conn != null) {
-				createSchemaElementIfNotExist(conn, "flower_menu_options",
-						"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-								"name VARCHAR(255) UNIQUE NOT NULL, " +
-								"auto_use BOOLEAN DEFAULT FALSE NOT NULL",
-						"table");
-			}
-		}
-	}
-
-	private static void createSchemaElementIfNotExist(java.sql.Connection conn, String name, String definitions, String type) throws SQLException {
-		if (!schemaElementExists(conn, name, type)) {
-			String sql = type.equals("table") ? "CREATE TABLE " + name + " (\n" + definitions + "\n);" : "CREATE INDEX " + name + " ON " + definitions + ";";
-			try (Statement stmt = conn.createStatement()) {
-				stmt.execute(sql);
-			}
-			System.out.println("A new " + type + " (" + name + ") has been created in the database.");
-		}
-	}
-
-	private static boolean schemaElementExists(Connection conn, String name, String type) throws SQLException {
-		String checkExistsQuery = "SELECT name FROM sqlite_master WHERE type='" + type + "' AND name='" + name + "';";
-		try (Statement stmt = conn.createStatement();
-			 ResultSet rs = stmt.executeQuery(checkExistsQuery)) {
-			return rs.next();
+		try {
+			java.nio.file.Files.delete(db);
+		} catch (java.io.IOException e) {
+			System.out.println("Could not delete static_data.db: " + e);
 		}
 	}
 

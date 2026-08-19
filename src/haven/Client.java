@@ -58,8 +58,7 @@ public class Client implements Console.Directory {
                     gameDir = "";
                 }
             }
-            FlowerMenu.createDatabaseIfNotExist();
-            FlowerMenu.fillAutoChooseMap();
+            FlowerMenu.loadAutoChooseMap();
             HitBoxes.createDatabaseIfNotExist();
             HitBoxes.loadCollisionBoxMap();
         } catch (SQLException e) {
