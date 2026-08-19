@@ -76,13 +76,44 @@ jobs:
         with:
           name: Thunder-${{ steps.tag.outputs.version }}
 
+      - name: Bundle Java runtime
+        if: steps.tag.outputs.exists == 'false'
+        env:
+          # Temurin Java 25 from the Adoptium API. Change jdk to jre here to
+          # ship the much smaller runtime-only image instead.
+          JAVA_URL_BASE: https://api.adoptium.net/v3/binary/latest/25/ga
+          JAVA_IMAGE: jdk
+        run: |
+          version="${{ steps.tag.outputs.version }}"
+          mkdir client && unzip -q "Thunder-$version.zip" -d client
+
+          # Windows x64 bundle
+          curl -sSfL -o java-windows.zip \
+            "$JAVA_URL_BASE/windows/x64/$JAVA_IMAGE/hotspot/normal/eclipse"
+          mkdir java-windows && unzip -q java-windows.zip -d java-windows
+          mv java-windows/jdk-* client/jre
+          (cd client && zip -qr "../Thunder-$version-windows-x64.zip" .)
+          rm -rf client/jre
+
+          # Linux x64 bundle (tar.gz to preserve execute permissions)
+          curl -sSfL -o java-linux.tar.gz \
+            "$JAVA_URL_BASE/linux/x64/$JAVA_IMAGE/hotspot/normal/eclipse"
+          mkdir java-linux && tar -xzf java-linux.tar.gz -C java-linux
+          mv java-linux/jdk-* client/jre
+          chmod +x client/Play_Linux.sh client/hafen.jar
+          tar -czf "Thunder-$version-linux-x64.tar.gz" -C client .
+
       - name: Tag and release
         if: steps.tag.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           version="${{ steps.tag.outputs.version }}"
-          gh release create "$version" "Thunder-$version.zip" \
+          gh release create "$version" \
+            "Thunder-$version-windows-x64.zip" \
+            "Thunder-$version-linux-x64.tar.gz" \
+            "Thunder-$version.zip" \
             --title "$version" \
             --target "$GITHUB_SHA" \
-            --generate-notes
+            --generate-notes \
+            --notes "Windows and Linux downloads include Java 25 (Temurin) — no Java installation needed. The plain zip requires an installed Java 17-25."

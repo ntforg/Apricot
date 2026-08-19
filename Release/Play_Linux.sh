@@ -4,13 +4,22 @@
 # Equivalent to the Windows .bat version
 # --------------------------------------------
 
+dir="$(cd "$(dirname "$0")" && pwd)"
+
+# Use the bundled Java runtime if present, otherwise fall back to system Java.
+if [ -x "$dir/jre/bin/java" ]; then
+    JAVA="$dir/jre/bin/java"
+else
+    JAVA=java
+fi
+
 # Optional: print where Java is being run from
 echo "Launching Hafen..."
-echo "Using Java from: $(which java)"
+echo "Using Java from: $JAVA"
 echo
 
 # Run the Java application
-java \
+"$JAVA" \
   -Dsun.java2d.uiScale.enabled=false \
   -Dsun.java2d.win.uiScaleX=1.0 \
   -Dsun.java2d.win.uiScaleY=1.0 \

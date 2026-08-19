@@ -26,11 +26,15 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3423755273
 ## Downloading/Updating the Thunder Client (Outside of Steam):
 Download the latest release from: https://github.com/ntforg/Thunder/releases/latest
 
+The Windows and Linux downloads come with Java 25 bundled — no Java installation needed.
+The plain zip requires an installed Java, **any version between Java 17 and Java 25**.
+
 ## Launching the Thunder Client (Outside of Steam):
 
 Run the Play.bat file inside the client folder, or Play_Linux.sh (for Linux/MacOS)
 
-The client works with **any version between Java 17 and Java 25**
+The launcher uses the bundled Java runtime (the `jre` folder) if present, and your
+system Java otherwise. The client works with **any version between Java 17 and Java 25**
 I've also been playing on GraalVM (some different open-source java distribution based on OpenJDK),
 and I seem to get like 15-20 extra FPS out of the client.
 
