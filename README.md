@@ -49,10 +49,9 @@ The plain zip requires an installed Java, **any version between Java 17 and Java
 
 Run the Play.bat file inside the client folder, or Play_Linux.sh (for Linux/MacOS)
 
-The launch scripts use the bundled Java runtime (the `jre` folder) if present, and your
-system Java otherwise. The client works with **any version between Java 17 and Java 25**.
-GraalVM (an open source Java distribution based on OpenJDK) has also been reported to
-give an extra 15 to 20 FPS.
+The launch scripts use the bundled Java 25 runtime (the `jre` folder) if present, and your
+system Java otherwise. The bundled Java 25 is the recommended way to run the client.
+If you run your own Java instead, the client works with **any version between Java 17 and Java 25**.
 
 ### If the client doesn't launch:
 1. Make sure your installed Java version is **any version between Java 17 and Java 25**
