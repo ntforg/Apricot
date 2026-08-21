@@ -61,6 +61,7 @@ If you run your own Java instead, the client works with **any version between Ja
 
 The client supports Cediner's Web Map server (you set up your own private map server, it's not a public map):
 https://github.com/Cediner/hnh-map-vuetify
+Ganhart/Aritain's updated version: https://github.com/Aritain/hnh-map-updated
 
 Or you can use dafels' Mapping service (or set up your own private map server):
 https://www.havenandhearth.com/forum/viewtopic.php?f=49&t=79701
