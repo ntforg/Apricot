@@ -215,6 +215,16 @@ public class LoginScreen extends Widget {
 			Widget prev;
 			prev = add(new Label("A new client version is available!"), UI.scale(new Coord(74, 3)));
 			prev = add(new Label("Please remember to update your client to avoid bugs & crashes!"), prev.pos("bl").adds(0, 8).x(0));
+			// Only worth offering where the client could have done it itself,
+			// which is also the only way back once it has been turned off.
+			if (Updater.possible())
+				prev = add(new CheckBox("Install updates automatically") {
+					{a = Updater.enabled();}
+
+					public void changed(boolean val) {
+						Updater.enabled(val);
+					}
+				}, prev.pos("bl").adds(0, 8).x(0));
 			Button close = new Button(UI.scale(120), "Close", false) {
 				@Override
 				public void click() {
@@ -613,7 +623,13 @@ public class LoginScreen extends Widget {
 		}
 		if (!githubVersionChecked && !Config.githubLatestVersion.equals("Loading...") && !Config.githubLatestVersion.equals("Failed")){
 			if (!Config.clientVersion.equals(Config.githubLatestVersion)) {
-				adda(updateWindow, 0.5, 0);
+				// Install it ourselves where we can; the notice is for
+				// installs that have to be updated by hand (Steam, and
+				// anything not started through its own Play script).
+				if (Updater.enabled() && !Updater.skipped() && Updater.possible())
+					adda(new UpdateWindow(Config.githubLatestVersion), 0.5, 0);
+				else
+					adda(updateWindow, 0.5, 0);
 			}
 			githubVersionChecked = true;
 		}

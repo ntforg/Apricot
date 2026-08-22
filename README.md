@@ -17,7 +17,7 @@ Steam Workshop item: https://steamcommunity.com/sharedfiles/filedetails/?id=3786
 - Everything Hurricane has
 - Faster patches, and suggestions are welcome
 - Crashes get reported to the developer automatically (stack trace and system info), so bugs get fixed without anyone having to file them
-- A launcher that installs the client and keeps it updated automatically
+- Updates itself: new versions are downloaded and installed from the login screen, no launcher needed
 - Java 25 included, nothing else to install
 - Coming from Hurricane? Your keybinds and settings carry over automatically
 
@@ -31,9 +31,15 @@ Important note:
 
 ## Downloading/Updating the Apricot Client (Outside of Steam):
 
-The easiest way is the Apricot Launcher, a small script that downloads the client,
-keeps it up to date, and launches it. Put it in its own folder and run it; the client
-is installed into an `Apricot` subfolder next to it.
+Once the client is installed, it keeps itself up to date: when a new version is
+out, the login screen downloads and installs it and restarts into it. Turn that
+off with the checkbox on that window, or by launching with
+`-Dhaven.autoupdate=false`, and the client will only tell you that an update is
+available. Steam installs are updated by Steam, as before.
+
+For the first install, the easiest way is the Apricot Launcher, a small script that
+downloads the client, keeps it up to date, and launches it. Put it in its own folder
+and run it; the client is installed into an `Apricot` subfolder next to it.
 
 - Windows: https://github.com/ntforg/Apricot/releases/latest/download/ApricotLauncher.bat
 - Linux: https://github.com/ntforg/Apricot/releases/latest/download/ApricotLauncher.sh

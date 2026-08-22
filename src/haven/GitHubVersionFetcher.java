@@ -4,28 +4,27 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class GitHubVersionFetcher {
     private static final ExecutorService executor = Executors.newCachedThreadPool();
 
+    // The callback runs on the fetching thread once the answer is in, so
+    // that a slow or unreachable GitHub does not hold up whoever asked.
     public static void fetchLatestVersion(String owner, String repo, VersionCallback callback) {
         // Set loading state
         callback.onVersionFetched("Loading...");
 
-        // Use the shared ExecutorService to manage the task
-        java.util.concurrent.Future<String> future = executor.submit(() -> getLatestReleaseVersion(owner, repo));
-
-        // Retrieve the result
-        try {
-            String version = future.get(); // This will block until the result is available
-            callback.onVersionFetched(version); // Call the callback with the version
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Restore the interrupted status
-            callback.onVersionFetched("Failed"); // Update to failed on interruption
-        } catch (ExecutionException e) {
-            callback.onVersionFetched("Failed"); // Update to failed on exceptions
-        }
+        executor.submit(() -> {
+            String version;
+            try {
+                version = getLatestReleaseVersion(owner, repo);
+            } catch (Exception e) {
+                version = "Failed";
+            }
+            callback.onVersionFetched(version);
+        });
     }
 
     private static String getLatestReleaseVersion(String owner, String repo) throws Exception {

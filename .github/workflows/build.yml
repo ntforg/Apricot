@@ -5,7 +5,10 @@ name: Build
 # tag the commit and publish a GitHub release with the packaged client.
 # The in-client update check (GitHubVersionFetcher) reads the latest
 # release's tag_name, so publishing the release is what makes new
-# versions show up on the login screen.
+# versions show up on the login screen. The client then installs itself
+# from the plain Apricot-$version.zip asset (see haven.Updater), which
+# must therefore keep both its name and its runtime-less contents: the
+# install it is unpacked over already has a jre.
 
 on:
   push:
@@ -121,7 +124,7 @@ jobs:
             --title "$version" \
             --target "$GITHUB_SHA" \
             --generate-notes \
-            --notes "New here? Grab ApricotLauncher.bat (Windows) or ApricotLauncher.sh (Linux) — it downloads the client and keeps it up to date. The Windows and Linux packages include Java 25 (Temurin), no Java installation needed. The plain zip requires an installed Java 17-25."
+            --notes "Already have Apricot? It updates itself — the login screen will offer this version next time you start it. New here? Grab ApricotLauncher.bat (Windows) or ApricotLauncher.sh (Linux) to install it. The Windows and Linux packages include Java 25 (Temurin), no Java installation needed. The plain zip requires an installed Java 17-25."
 
       - name: Announce release on Discord
         if: steps.tag.outputs.exists == 'false'
@@ -154,7 +157,7 @@ jobs:
                description: $desc,
                color: 3966687,
                fields: [{name: "Download", value: $downloads}],
-               footer: {text: "The launcher updates existing installs automatically."}
+               footer: {text: "Existing installs update themselves from the login screen."}
              }]}' > discord-payload.json
           curl -sSf -H "Content-Type: application/json" \
             -d @discord-payload.json "$DISCORD_WEBHOOK"
