@@ -93,7 +93,7 @@ public class Cal extends Widget {
     String tt = String.format("Day: %02d Month: %02d Year: %02d\n%s\nMoon: %s", day, month, year, season, Astronomy.phase[mp]);
     if(!tt.equals(tip)) {
         tip = tt;
-        tooltip = RichText.render(tt, UI.scale(250));
+        tooltip = L10N.richtip(tt, UI.scale(250));
     }
     return tooltip;
     }

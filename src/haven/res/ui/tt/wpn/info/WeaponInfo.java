@@ -32,7 +32,7 @@ public abstract class WeaponInfo extends ItemInfo.Tip {
     }
 
     public BufferedImage wpntip() {
-	return(RichText.render(wpntips(), 0).img);
+	return(RichText.render(haven.L10N.tipline(wpntips()), 0).img);
     }
 
     public String wpntips() {

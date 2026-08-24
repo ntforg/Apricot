@@ -576,14 +576,14 @@ public class LoginScreen extends Widget {
 	if(this.error != null)
 	    this.error = null;
 	if(error != null)
-	    this.error = textf.render(error, java.awt.Color.RED);
+	    this.error = textf.render(L10N.msg(error), java.awt.Color.RED);
     }
 
     private void progress(String p) {
 	if(progress != null)
 	    progress = null;
 	if(p != null)
-	    progress = textf.render(p, java.awt.Color.WHITE);
+	    progress = textf.render(L10N.msg(p), java.awt.Color.WHITE);
     }
 
     private void clear() {

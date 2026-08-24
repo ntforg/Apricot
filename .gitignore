@@ -5,3 +5,6 @@
 /build.properties
 /.idea
 *~
+
+# Translations dumped by the client while "Record untranslated text" is on
+/Translations/*/missing/

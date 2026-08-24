@@ -90,7 +90,7 @@ public class RoastingSpitBot extends Window implements Runnable {
         }, startbutton.pos("bl").adds(0, 6));
 
         pack();
-        passiveModeBox.tooltip = RichText.render("If enabled, the bot will only roast once there is something on the spit and once done roasting it will wait for another item to be put on the roast", UI.scale(300));
+        passiveModeBox.tooltip = L10N.richtip("If enabled, the bot will only roast once there is something on the spit and once done roasting it will wait for another item to be put on the roast", UI.scale(300));
     }
 
     private void sleep(int duration) {

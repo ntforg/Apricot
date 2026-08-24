@@ -63,7 +63,7 @@ public class FoodService {
                             }
                         }
                         if (info instanceof ItemInfo.Name) {
-                            parsedFoodInfo.itemName = ((ItemInfo.Name) info).str.text;
+                            parsedFoodInfo.itemName = ((ItemInfo.Name) info).original;
                         }
 
                         if (info.getClass().getName().contains("Ingredient")) {

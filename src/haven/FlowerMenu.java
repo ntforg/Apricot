@@ -83,15 +83,18 @@ public class FlowerMenu extends Widget {
 	public Petal(String name, int i) {
 	    super(Coord.z);
 		i = i+1;
+	    /* `name' stays untranslated: it is the petal's identity, both for
+	     * the auto-choose map and for what gets sent back to the server. */
 	    this.name = name;
+		String disp = L10N.flower(name);
 		if (name.equals("Steal")) {
-			text = ptf.renderstroked(i + ". " + ">> STEAL <<", ptcRed, ptcStroke);
+			text = ptf.renderstroked(i + ". " + L10N.flower(">> STEAL <<"), ptcRed, ptcStroke);
 		} else if (name.equals("Invite")) {
-			text = ptf.renderstroked(i +". " + "Invite to Party", ptcGreen, ptcStroke);
+			text = ptf.renderstroked(i +". " + L10N.flower("Invite to Party"), ptcGreen, ptcStroke);
 		} else if (name.equals("Memorize")) {
-			text = ptf.renderstroked(i +". " + name, ptcYellow, ptcStroke);
+			text = ptf.renderstroked(i +". " + disp, ptcYellow, ptcStroke);
 		} else {
-			text = ptf.renderstroked(i + ". " + name, ptc, ptcStroke);
+			text = ptf.renderstroked(i + ". " + disp, ptc, ptcStroke);
 		}
 	    resize(text.sz().x + UI.scale(25), ph);
 	}

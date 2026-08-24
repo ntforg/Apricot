@@ -233,6 +233,7 @@ public class Window extends Widget {
 	public Coord wsz; // ND: Added this to be able to make the window top bar fully draggable
 	public int cmw;
 	public Text cap = null;
+	private String capsrc = null;
 
 	public DefaultDeco(boolean lg) {
 	    this.lg = lg;
@@ -293,8 +294,11 @@ public class Window extends Widget {
 
 	protected void drawframe(GOut g) {
 	    Window wnd = (Window)parent;
-	    if((cap == null) || (cap.text != wnd.cap) || (cfocus != wnd.hasfocus)) {
-		cap = (wnd.cap == null) ? null : ((cfocus = wnd.hasfocus) ? cf : ncf).render(wnd.cap);
+	    /* The cached caption is keyed on the untranslated title, since
+	     * that is what the rest of the client stores and compares. */
+	    if((cap == null) || (capsrc != wnd.cap) || (cfocus != wnd.hasfocus)) {
+		capsrc = wnd.cap;
+		cap = (wnd.cap == null) ? null : ((cfocus = wnd.hasfocus) ? cf : ncf).render(L10N.window(wnd.cap));
 		cmw = (cap == null) ? 0 : cap.sz().x;
 		cmw = Math.max(cmw, this.sz.x / 4);
 		cptl = Coord.of(ca.ul.x, 0);

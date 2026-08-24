@@ -139,7 +139,9 @@ public abstract class UILoop implements Console.Directory {
 		    tt = c;
 		} else if(tooltip instanceof String) {
 		    if(((String)tooltip).length() > 0) {
-			Tex r = new TexI(Text.render((String)tooltip).img, false);
+			/* The one place every plain-string tooltip in the
+			 * client passes through on its way to the screen. */
+			Tex r = new TexI(Text.render(L10N.tooltip((String)tooltip)).img, false);
 			tt = () -> r;
 			free = r;
 		    }

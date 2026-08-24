@@ -18,7 +18,7 @@ public class Armor extends ItemInfo.Tip {
     }
 
     public BufferedImage tipimg() {
-	return(RichText.render(String.format("$col[85,164,237]{Armor}: %,d (%,d + %,d)", hard+soft, hard, soft), 0).img);
+	return(RichText.render(haven.L10N.tipline(String.format("$col[85,164,237]{Armor}: %,d (%,d + %,d)", hard+soft, hard, soft)), 0).img);
     }
 
     public static class Fac implements ItemInfo.InfoFactory {

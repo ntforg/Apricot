@@ -1875,21 +1875,23 @@ public class Widget {
 		String tip;
 		int w = 0;
 		if(base != null) {
+		    /* `base' is kept untranslated so that the tip can be
+		     * re-rendered if the language changes. */
 		    if(rich) {
-			tip = base;
+			tip = L10N.tooltip(base);
 			if((key != null) && (key != KeyMatch.nil))
-				tip = String.format("%s\n\nKeyboard shortcut: $col[255,200,0]{%s}", tip, RichText.Parser.quote(key.longname())); // ND: all 3 of these affect the keybind text color
+				tip = String.format(L10N.msg("%s\n\nKeyboard shortcut: $col[255,200,0]{%s}"), tip, RichText.Parser.quote(key.longname())); // ND: all 3 of these affect the keybind text color
 			w = UI.scale(300);
 		    } else {
-			tip = RichText.Parser.quote(base);
+			tip = RichText.Parser.quote(L10N.tooltip(base));
 			if((key != null) && (key != KeyMatch.nil))
-				tip = String.format("%s ($col[255,200,0]{%s})", tip, RichText.Parser.quote(key.longname())); // ND: all 3 of these affect the keybind text color
+				tip = String.format(L10N.msg("%s ($col[255,200,0]{%s})"), tip, RichText.Parser.quote(key.longname())); // ND: all 3 of these affect the keybind text color
 		    }
 		} else {
 		    if((key == null) || (key == KeyMatch.nil))
 			tip = null;
 		    else
-			tip = String.format("Keyboard shortcut: $col[255,200,0]{%s}", RichText.Parser.quote(key.longname())); // ND: all 3 of these affect the keybind text color
+			tip = String.format(L10N.msg("Keyboard shortcut: $col[255,200,0]{%s}"), RichText.Parser.quote(key.longname())); // ND: all 3 of these affect the keybind text color
 		}
 		rend = (tip == null) ? null : RichText.render(tip, w).tex();
 		hrend = true;

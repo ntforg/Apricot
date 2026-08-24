@@ -31,6 +31,9 @@ import java.awt.Color;
 public class Label extends Widget {
     public final Text.Foundry f;
     public Text text;
+    /* Stays the original English whatever language is selected: widgets like
+     * ProspectingWnd and FoodInfo read it back to work out what a label says.
+     * Only the rendered image is translated. */
     public String texts;
     public Color col = Color.WHITE;
 
@@ -47,14 +50,14 @@ public class Label extends Widget {
     public Label(String text, int w, Text.Foundry f) {
 	super(Coord.z);
 	this.f = f;
-	this.text = Text.create(texts, PUtils.strokeImg(f.renderwrap(texts = text, this.col, w)));
+	this.text = Text.create(texts = text, PUtils.strokeImg(f.renderwrap(L10N.label(text), this.col, w)));
 	resize(this.text.sz());
     }
 
     public Label(String text, Text.Foundry f) {
 	super(Coord.z);
 	this.f = f;
-	this.text = Text.create(texts, PUtils.strokeImg(f.render(texts = text, this.col)));
+	this.text = Text.create(texts = text, PUtils.strokeImg(f.render(L10N.label(text), this.col)));
 	resize(this.text.sz());
     }
 
@@ -74,7 +77,7 @@ public class Label extends Widget {
 //	if(text.equals(this.text.text)) // ND: This causes bugs with the Study window to not properly update the info labels (and probably bugs out some other labels too)
 //	    return;
 	this.text.dispose();
-	this.text = Text.create(texts, PUtils.strokeImg(f.render(texts = text, col)));
+	this.text = Text.create(texts = text, PUtils.strokeImg(f.render(L10N.label(text), col)));
 	resize(this.text.sz());
     }
 
@@ -82,12 +85,12 @@ public class Label extends Widget {
 	if(color.equals(col))
 	    return;
 	this.text.dispose();
-	this.text = Text.create(texts, PUtils.strokeImg(f.render(texts, col = color)));
+	this.text = Text.create(texts, PUtils.strokeImg(f.render(L10N.label(texts), col = color)));
 	resize(this.text.sz());
     }
 
 	public void setstroked(Color strokeColor) {
-		this.text = Text.create(texts, PUtils.strokeImg(f.renderstroked(texts, col, strokeColor)));
+		this.text = Text.create(texts, PUtils.strokeImg(f.renderstroked(L10N.label(texts), col, strokeColor)));
 		sz = this.text.sz();
 	}
 

@@ -503,7 +503,7 @@ public class BAttrWnd extends Widget {
 
 	int ah = attrs.get(attrs.size() - 1).pos("bl").y - attrs.get(0).pos("ul").y;
 	prev = add(CharWnd.settip(new Img(catf.render("Food Efficiency").tex()), "gfx/hud/chr/tips/constip"), width, 0);
-	prev.tooltip = RichText.render("$col[218,163,0]{Food Efficiency} affects the percentage of $col[0,180,0]{FEPs} and $col[255,192,128]{Hunger} you gain from food." +
+	prev.tooltip = L10N.richtip("$col[218,163,0]{Food Efficiency} affects the percentage of $col[0,180,0]{FEPs} and $col[255,192,128]{Hunger} you gain from food." +
 			"\n$col[185,185,185]{Note that your Table + Chair, Account Verification and Subscription Status also affect FEP and Hunger gain.}" +
 			"\n" +
 			"\n$col[128,128,255]{Energy} gain is *NEVER* affected by $col[218,163,0]{Food Efficiency}, or anything else!" +
@@ -511,7 +511,7 @@ public class BAttrWnd extends Widget {
 	cons = add(new Constipations(Coord.of(attrw, ah)), prev.pos("bl").adds(5, 0).add(wbox.btloff()));
 	prev = Frame.around(this, Collections.singletonList(cons));
 	prev = add(CharWnd.settip(new Img(catf.render("Hunger Level").tex()), "gfx/hud/chr/tips/hunger"), prev.pos("bl").x(width).adds(0, 10));
-	prev.tooltip = RichText.render("More Hunger (Satiety) = Less FEP Multiplier\nOK? ok.", 370);
+	prev.tooltip = L10N.richtip("More Hunger (Satiety) = Less FEP Multiplier\nOK? ok.", 370);
 	glut = add(new GlutMeter(), prev.pos("bl").adds(5, 2));
 	pack();
     }

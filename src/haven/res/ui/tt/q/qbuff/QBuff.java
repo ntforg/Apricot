@@ -53,7 +53,7 @@ public class QBuff extends ItemInfo.Tip {
 	    int i = 0;
 	    for(QBuff q : ql) {
 		ic[i] = CompImage.mk(q.icon);
-		nm[i] = CompImage.mk(Text.render(q.name + ":").img);
+		nm[i] = CompImage.mk(Text.render(haven.L10N.tooltip(q.name) + ":").img);
 		qv[i] = CompImage.mk(Text.render((((int)q.q) == q.q)?String.format("%d", (int)q.q):String.format("%.1f", q.q)).img);
 		i++;
 	    }

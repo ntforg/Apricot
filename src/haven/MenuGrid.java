@@ -160,6 +160,9 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    return(spr);
 	}
 	public String name() {return(act().name);}
+	/** The untranslated action name, for code that recognizes a
+	 *  particular action rather than displaying it. */
+	public String origname() {return(act().orig);}
 	public KeyMatch hotkey() {
 	    char hk = act().hk;
 	    if(hk == 0)
@@ -179,7 +182,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    if(pag.id instanceof Indir)
 		pag.scm.wdgmsg("act", Utils.extend(Utils.extend(new Object[0], act().ad), eact));
 		else {
-			if (OptWnd.preventUsingRawHideWhenRidingCheckBox.a && pag.button() != null && pag.button().name() != null && pag.button().name().equals("Raw Hide!")) { // ND: I can't figure out a better reliable way to check the button
+			if (OptWnd.preventUsingRawHideWhenRidingCheckBox.a && pag.button() != null && pag.button().origname() != null && pag.button().origname().equals("Raw Hide!")) { // ND: I can't figure out a better reliable way to check the button
 				if (pag.scm.ui != null && pag.scm.ui.gui != null && pag.scm.ui.gui.map != null && pag.scm.ui.gui.map.player() != null && pag.scm.ui.gui.map.player().imOnHorseback){ // ND: Might be overkill, better safe than sorry.
 					pag.scm.ui.gui.error("Prevent Raw Hide when Riding a Horse is ENABLED! Dismount first before using Raw Hide!");
 					return;

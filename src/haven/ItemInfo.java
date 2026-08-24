@@ -244,12 +244,24 @@ public abstract class ItemInfo {
 	@Resource.PublishedCode.Builtin(type = InfoFactory.class, name = "defn")
 	public static class Default implements InfoFactory {
 	    public static String get(Owner owner) {
+		return(name(owner, false));
+	    }
+
+	    /** The untranslated name, which automation and item filters match on. */
+	    public static String original(Owner owner) {
+		return(name(owner, true));
+	    }
+
+	    private static String name(Owner owner, boolean orig) {
+		/* Names the server composes -- "3 liters of Water", player
+		 * names, sign texts -- have no resource to key on, so they go
+		 * through the pattern-matched label bundle instead. */
 		if(owner instanceof Dynamic)
-		    return(((Dynamic)owner).name());
+		    return(dynamic(((Dynamic)owner).name(), orig));
 		if(owner instanceof SpriteOwner) {
 		    GSprite spr = ((SpriteOwner)owner).sprite();
 		    if(spr instanceof Dynamic)
-			return(((Dynamic)spr).name());
+			return(dynamic(((Dynamic)spr).name(), orig));
 		}
 		if(!(owner instanceof ResOwner))
 		    return(null);
@@ -257,12 +269,16 @@ public abstract class ItemInfo {
 		Resource.Tooltip tt = res.layer(Resource.tooltip);
 		if(tt == null)
 		    throw(new RuntimeException("Item resource " + res + " is missing default tooltip"));
-		return(tt.t);
+		return(orig ? tt.orig : tt.t);
+	    }
+
+	    private static String dynamic(String nm, boolean orig) {
+		return((orig || (nm == null)) ? nm : L10N.label(nm));
 	    }
 
 	    public ItemInfo build(Owner owner, Raw raw, Object... args) {
 		String nm = get(owner);
-		return((nm == null) ? null : new Name(owner, nm));
+		return((nm == null) ? null : new Name(owner, Text.render(nm), original(owner)));
 	    }
 	}
     }
@@ -293,7 +309,7 @@ public abstract class ItemInfo {
 
     public static class Contents extends Tip {
 	public final List<ItemInfo> sub;
-	private static final Text.Line ch = Text.render("Contents:");
+	private static final Text.Line ch = Text.render(L10N.label("Contents:"));
 	private static final Pattern PARSE = Pattern.compile("([\\d.]*) ([\\w]+) of ([\\w\\s]+)\\.?");
 	public Content content;
 

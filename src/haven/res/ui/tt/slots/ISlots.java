@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /* >tt: Fac */
 @haven.FromResource(name = "ui/tt/slots", version = 34)
 public class ISlots extends ItemInfo.Tip implements GItem.NumberInfo {
-    public static final Text ch = Text.render("Gilding list:");
+    public static final Text ch = Text.render(haven.L10N.label("Gilding list:"));
     public static final Text.Foundry progf = new Text.Foundry(Text.dfont.deriveFont(Font.ITALIC), 10, new Color(0, 169, 224));
     public final Collection<SItem> s = new ArrayList<SItem>();
     public final int left;
@@ -45,7 +45,7 @@ public class ISlots extends ItemInfo.Tip implements GItem.NumberInfo {
     boolean extendedView = ui == null || (ui != null && ui.modshift); // ND: There's a weird bug with barterstands. The UI from the Shopbox class doesn't detect ui.modshift or some crap.
 	l.cmp.add(ch.img, new Coord(UI.scale(2), l.cmp.sz.y + UI.scale(4)));
 	if(attrs.length > 0) {
-	    BufferedImage head = RichText.render(String.format("Chance: $col[%s]{%d%%} to $col[%s]{%d%%}", chc, Math.round(100 * pmin), chc, Math.round(100 * pmax)), 0).img;
+	    BufferedImage head = RichText.render(haven.L10N.tipline(String.format("Chance: $col[%s]{%d%%} to $col[%s]{%d%%}", chc, Math.round(100 * pmin), chc, Math.round(100 * pmax))), 0).img;
 	    int h = head.getHeight();
 	    int x = UI.scale(10), y = l.cmp.sz.y;
 	    l.cmp.add(head, new Coord(x, y));
@@ -56,7 +56,7 @@ public class ISlots extends ItemInfo.Tip implements GItem.NumberInfo {
 		x += icon.getWidth() + UI.scale(2);
 	    }
 	} else {
-	    BufferedImage head = RichText.render(String.format("Chance: $col[%s]{%d%%}", chc, (int)Math.round(100 * pmin)), 0).img;
+	    BufferedImage head = RichText.render(haven.L10N.tipline(String.format("Chance: $col[%s]{%d%%}", chc, (int)Math.round(100 * pmin))), 0).img;
 	    l.cmp.add(head, new Coord(UI.scale(10), l.cmp.sz.y));
 	}
 	Map<Entry, String> totalAttr = new HashMap<>();

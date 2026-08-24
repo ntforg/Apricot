@@ -57,6 +57,7 @@ public class Client implements Console.Directory {
                 else {
                     gameDir = "";
                 }
+                L10N.basedir(gameDir);
             }
             FlowerMenu.loadAutoChooseMap();
             HitBoxes.createDatabaseIfNotExist();

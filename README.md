@@ -20,6 +20,7 @@ Steam Workshop item: https://steamcommunity.com/sharedfiles/filedetails/?id=3786
 - Updates itself: new versions are downloaded and installed from the login screen, no launcher needed
 - Java 25 included, nothing else to install
 - Coming from Hurricane? Your keybinds and settings carry over automatically
+- Play in your own language: the interface, item names, actions and item descriptions can be translated, and anything not translated yet just stays in English
 
 Suggestions and support: https://discord.gg/qY9py4HvfF
 
@@ -28,6 +29,25 @@ Important note:
   when the client crashes, a crash report (stack trace and system info, shown in the crash dialog) is sent
   to the Apricot developer so the bug can be fixed. This can be turned off by launching with
   `-Dhaven.errorurl=stderr`.
+
+## Languages
+
+Pick a language under **Options -> Advanced Settings -> Interface Settings ->
+Language**, then restart the client. Russian, Chinese, Korean and French ship
+with the client; Polish and German are started but still need translators.
+
+Nothing has to be complete to be useful -- any text without a translation stays
+in English, so a language is playable from its first entry.
+
+Translations live in JSON files, one per kind of text. The ones that ship with
+the client are inside `hafen.jar`; anything you put in the `Translations` folder
+next to it overrides them and is never touched by the updater, so corrections
+survive updates. Adding a folder there adds a language to the menu; deleting it
+removes it. See [Translations/README.md](Translations/README.md) for the format,
+and for the built-in tool that lists everything still untranslated.
+
+Finished work is welcome upstream -- open a pull request adding your files under
+`src/l10n/<language>/`.
 
 ## Downloading/Updating the Apricot Client (Outside of Steam):
 

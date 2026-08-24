@@ -148,7 +148,9 @@ public class RootWidget extends ConsoleHost implements UI.Notice.Handler, Widget
     }
 
     public void msg(String msg, Color color) {
-	lastmsg = msgfoundry.render(msg, color);
+	/* Translated on the way to the screen only: callers still match
+	 * against the English the server sent. */
+	lastmsg = msgfoundry.render(L10N.msg(msg), color);
 	msgtime = Utils.rtime();
     }
 

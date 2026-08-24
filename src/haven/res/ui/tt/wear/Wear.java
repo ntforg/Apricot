@@ -23,8 +23,8 @@ public class Wear extends ItemInfo.Tip {
 
     public BufferedImage tipimg() {
 	if(d >= m)
-	    return(RichText.render(String.format("$col[70,194,80]{Durability}: $col[255,128,128]{%,d/%,d} $col[255,255,255]{(%,.1f%%)}", (m-d), m, percentage), 0).img);
-	return(RichText.render((String.format("$col[70,194,80]{Durability}: %,d/%,d (%,.2f%%)", (m-d), m, percentage)), 0).img);
+	    return(RichText.render(haven.L10N.tipline(String.format("$col[70,194,80]{Durability}: $col[255,128,128]{%,d/%,d} $col[255,255,255]{(%,.1f%%)}", (m-d), m, percentage)), 0).img);
+	return(RichText.render(haven.L10N.tipline(String.format("$col[70,194,80]{Durability}: %,d/%,d (%,.2f%%)", (m-d), m, percentage)), 0).img);
     }
 
     public void layout(Layout l) {

@@ -45,6 +45,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -756,6 +757,7 @@ public class OptWnd extends Window {
 	public static CheckBox verticalContainerIndicatorsCheckBox;
 	public static boolean expWindowLocationIsTop = Utils.getprefb("expWindowLocationIsTop", true);
 	private static CheckBox showFramerateCheckBox;
+	private static CheckBox recordUntranslatedCheckBox;
 	public static CheckBox snapWindowsBackInsideCheckBox;
 	public static CheckBox dragWindowsInWhenResizingCheckBox;
 	public static CheckBox showHoverInventoriesWhenHoldingShiftCheckBox;
@@ -783,7 +785,45 @@ public class OptWnd extends Window {
 
     public class InterfaceSettingsPanel extends Panel {
 	public InterfaceSettingsPanel(Panel back) {
-	    Widget leftColumn = add(new Label("Interface scale (requires restart)"), 0, 0);
+	    Widget leftColumn = add(new Label("Language (requires restart)"), 0, 0);
+		leftColumn.tooltip = languageTooltip;
+	    {
+		/* Both lists are built once and indexed in parallel: the box
+		 * shows readable names, the preference stores the code. */
+		final List<String> langs = new ArrayList<>(L10N.languages);
+		final List<String> names = new ArrayList<>();
+		for(String lang : langs)
+		    names.add(L10N.langname(lang));
+		leftColumn = add(new OldDropBox<String>(Math.min(names.size(), 12), names) {
+			{super.change(L10N.langname(L10N.language()));}
+			protected String listitem(int i) {return(names.get(i));}
+			protected int listitems() {return(names.size());}
+			protected void drawitem(GOut g, String item, int i) {
+			    g.aimage(Text.renderstroked(item).tex(), Coord.of(UI.scale(3), g.sz().y / 2), 0.0, 0.5);
+			}
+			public void change(String item) {
+			    super.change(item);
+			    int i = names.indexOf(item);
+			    if(i >= 0)
+				L10N.language(langs.get(i));
+			}
+		    }, leftColumn.pos("bl").adds(0, 4));
+		leftColumn.tooltip = languageTooltip;
+	    }
+	    leftColumn = add(new Button(UI.scale(200), "Open translations folder", false).action(() -> opentranslations()),
+			     leftColumn.pos("bl").adds(0, 6).x(0));
+	    leftColumn.tooltip = translationsFolderTooltip;
+	    leftColumn = add(recordUntranslatedCheckBox = new CheckBox("Record untranslated text") {
+		    {a = L10N.debug();}
+		    public void changed(boolean val) {
+			L10N.debug(val);
+			if(val)
+			    L10N.dumpnow();
+		    }
+		}, leftColumn.pos("bl").adds(0, 6));
+	    recordUntranslatedCheckBox.tooltip = recordUntranslatedTooltip;
+
+	    leftColumn = add(new Label("Interface scale (requires restart)"), leftColumn.pos("bl").adds(0, 18).x(0));
 		leftColumn.tooltip = interfaceScaleTooltip;
 	    {
 		Label dpy = new Label("");
@@ -1960,7 +2000,7 @@ public class OptWnd extends Window {
 			prev = add(villageChatAlertSoundsCheckBox = new CheckBox("Village Chat Sound"){
 				{
 					a = (Utils.getprefb("villageChatAlertSounds", true));
-					tooltip = RichText.render("You must set a Village Name below, for this setting to properly work." +
+					tooltip = L10N.richtip("You must set a Village Name below, for this setting to properly work." +
 							"\n" +
 							"\nIf you don't set a village name, the sound alert will always trigger if chat message notification sounds are enabled.", UI.scale(300));
 				}
@@ -2460,7 +2500,7 @@ public class OptWnd extends Window {
 			}, leftColumn.pos("bl").adds(0, 12));
 			enableMineSweeperCheckBox.tooltip = enableMineSweeperTooltip;
 			leftColumn = add(new Label("Sweeper Display Duration (Min):"), leftColumn.pos("bl").adds(0, 2));
-			leftColumn.tooltip = RichText.render("Use this to set how long you want the numbers to be displayed on the ground, in minutes. The numbers will be visible as long as the dust particle effect stays on the tile." +
+			leftColumn.tooltip = L10N.richtip("Use this to set how long you want the numbers to be displayed on the ground, in minutes. The numbers will be visible as long as the dust particle effect stays on the tile." +
 					"\n" +
 					"\n$col[218,163,0]{Note:} $col[185,185,185]{Changing this option will only affect the duration of newly spawned cave dust tiles. The duration is set once the wall tile is mined and the cave dust spawns in.}", UI.scale(300));
 			add(sweeperDurationDropbox = new OldDropBox<Integer>(UI.scale(40), sweeperDurations.size(), UI.scale(17)) {
@@ -3113,7 +3153,7 @@ public class OptWnd extends Window {
 		private int addbtnImproved(Widget cont, String nm, String tooltip, Color color, KeyBinding cmd, int y) {
 			Label theLabel = new Label(nm);
 			if (tooltip != null && !tooltip.equals(""))
-				theLabel.tooltip = RichText.render(tooltip, UI.scale(300));
+				theLabel.tooltip = L10N.richtip(tooltip, UI.scale(300));
 			theLabel.setcolor(color);
 			return (cont.addhl(new Coord(0, y), cont.sz.x,
 					theLabel, new SetButton(UI.scale(140), cmd))
@@ -4477,7 +4517,7 @@ public class OptWnd extends Window {
 					}
 				}
 			}, prev.pos("ur").adds(50, 0));
-			alsoFillTheHidingBoxesCheckBox.tooltip = RichText.render("Fills in the boxes. Only the outer lines will remain visible through other objects (like cliffs).");
+			alsoFillTheHidingBoxesCheckBox.tooltip = L10N.richtip("Fills in the boxes. Only the outer lines will remain visible through other objects (like cliffs).");
 
 			prev = add(dontHideObjectsThatHaveTheirMapIconEnabledCheckBox = new CheckBox("Don't hide Objects that have their Map Icon Enabled"){
 				{a = (Utils.getprefb("dontHideObjectsThatHaveTheirMapIconEnabled", true));}
@@ -4571,7 +4611,7 @@ public class OptWnd extends Window {
 					}
 				}
 			}, prev2.pos("ur").adds(90, 0));
-			prev.tooltip = RichText.render("Only wall sections, NOT gates!");
+			prev.tooltip = L10N.richtip("Only wall sections, NOT gates!");
 
 			// TODO ND: Gotta figure out a way to not hide the doors... somehow
 			prev = add(hideHousesCheckbox = new CheckBox("Houses"){
@@ -4604,7 +4644,7 @@ public class OptWnd extends Window {
 					}
 				}
 			}, prev.pos("bl").adds(0, 2));
-			prev.tooltip = RichText.render("These won't show a hiding box, cause there's no collision.", UI.scale(300));
+			prev.tooltip = L10N.richtip("These won't show a hiding box, cause there's no collision.", UI.scale(300));
 
 			prev = add(hideTrellisCheckbox = new CheckBox("Trellises"){
 				{a = Utils.getprefb("hideTrellis", false);}
@@ -4616,7 +4656,7 @@ public class OptWnd extends Window {
 					}
 				}
 			}, prev.pos("bl").adds(0, 2));
-			prev.tooltip = RichText.render("This only hides the trellises, and not the crops growing on them.", UI.scale(300));
+			prev.tooltip = L10N.richtip("This only hides the trellises, and not the crops growing on them.", UI.scale(300));
 
 			Widget backButton;
 			add(backButton = new PButton(UI.scale(200), "Back", 27, back, "Advanced Settings"), prev.pos("bl").adds(0, 18).x(0));
@@ -5062,7 +5102,7 @@ public class OptWnd extends Window {
 
 	public PointBind(int w) {
 	    super(w, msg, false);
-	    tooltip = RichText.render("Bind a key to an element not listed above, such as an action-menu " +
+	    tooltip = L10N.richtip("Bind a key to an element not listed above, such as an action-menu " +
 				      "button. Click the element to bind, and then press the key to bind to it. " +
 				      "Right-click to stop rebinding.",
 				      300);
@@ -5270,8 +5310,35 @@ public class OptWnd extends Window {
 		skyboxFuture.cancel(true);
 	}
 
+	/* Opens the folder holding the editable translation files, creating
+	 * it first so that there is something to open on a fresh install. */
+	private static void opentranslations() {
+		java.nio.file.Path dir = L10N.userdir();
+		try {
+			java.nio.file.Files.createDirectories(dir);
+			Desktop.getDesktop().open(dir.toFile());
+		} catch(Exception e) {
+			new Warning(e, "could not open " + dir).issue();
+		}
+	}
+
 	// ND: Setting Tooltips
 	// Interface Settings Tooltips
+	private static final Object languageTooltip = L10N.richtip("Sets the language the client's own text is shown in, along with item names, action names and item descriptions sent by the server." +
+			"\n" +
+			"\nAnything with no translation yet stays in English, so a partly finished language is still perfectly playable." +
+			"\n" +
+			"\n$col[218,163,0]{Restart the client after changing this.} Text that is already on screen keeps the language it was drawn in.", UI.scale(300));
+	private static final Object translationsFolderTooltip = L10N.richtip("Opens the $col[218,163,0]{Translations} folder in your client folder." +
+			"\n" +
+			"\nAnything you put in $col[218,163,0]{Translations \\ <language> \\ *.json} overrides the translation shipped with the client, so your corrections survive client updates." +
+			"\n" +
+			"\n$col[185,185,185]{Adding a new folder there adds a new language to the list above. Deleting one removes it.}", UI.scale(300));
+	private static final Object recordUntranslatedTooltip = L10N.richtip("Writes every piece of text the client could not translate to $col[218,163,0]{Translations \\ <language> \\ missing \\ *.json}, as ready-to-fill-in entries." +
+			"\n" +
+			"\nTranslate the values, then move the entries into the matching file one folder up." +
+			"\n" +
+			"\n$col[185,185,185]{Only useful if you are working on a translation. Leave it off otherwise.}", UI.scale(300));
 	private static final Object interfaceScaleTooltip = RichText.render("$col[218,163,0]{Warning:} This setting is by no means perfect, and it can mess up many UI related things." +
 			"\nSome windows might just break when this is set above 1.00x." +
 			"\n" +

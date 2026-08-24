@@ -1230,10 +1230,16 @@ public class Resource implements Serializable {
 
     @LayerName("tooltip")
     public class Tooltip extends Layer {
+	/** The name as displayed, translated when a translation exists. */
 	public final String t;
-                
+	/** The untranslated name. The client identifies items by this --
+	 *  automation, item filters and saved settings all match on it --
+	 *  so it must stay in English whatever language is selected. */
+	public final String orig;
+
 	public Tooltip(Message buf) {
-	    t = new String(buf.bytes(), Utils.utf8);
+	    orig = new String(buf.bytes(), Utils.utf8);
+	    t = L10N.tooltip(Resource.this.name, orig);
 	}
                 
 	public void init() {}
@@ -1341,9 +1347,12 @@ public class Resource implements Serializable {
     @LayerName("pagina")
     public class Pagina extends Layer {
 	public final String text;
+	/** The untranslated description. */
+	public final String orig;
 		
 	public Pagina(Message buf) {
-	    text = new String(buf.bytes(), Utils.utf8);
+	    orig = new String(buf.bytes(), Utils.utf8);
+	    text = L10N.pagina(Resource.this.name, orig);
 	}
 		
 	public void init() {}
@@ -1351,7 +1360,10 @@ public class Resource implements Serializable {
 
     @LayerName("action")
     public class AButton extends Layer {
+	/** The action name as displayed, translated when a translation exists. */
 	public final String name;
+	/** The untranslated action name. */
+	public final String orig;
 	public final Named parent;
 	public final char hk;
 	public final String[] ad;
@@ -1368,7 +1380,8 @@ public class Resource implements Serializable {
 		    throw(new LoadException("Illegal resource dependency", e, Resource.this));
 		}
 	    }
-	    name = buf.string();
+	    orig = buf.string();
+	    name = L10N.action(Resource.this.name, orig);
 	    buf.string(); /* Prerequisite skill */
 	    hk = (char)buf.uint16();
 	    ad = new String[buf.uint16()];

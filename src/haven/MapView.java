@@ -2637,7 +2637,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 												(equip != null ? " \n$col[255,255,192]{" + equip + "}" : "");
 									else
 										tt = "Object Resource Path: " + "$col[255,200,0]{" + res.name + "}";
-									tooltip = RichText.render(tt, 400);
+									tooltip = L10N.richtip(tt, 400);
 									return;
 								}
 							} catch (Loading e) {
@@ -2650,10 +2650,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 							Resource res = map.tilesetr(t);
 							if (res != null) {
 								if (OptWnd.extendedMouseoverInfoCheckBox.a)
-									tooltip = RichText.render("Tile Resource Path: " + "$col[255,200,0]{" + res.name + "}" +
+									tooltip = L10N.richtip("Tile Resource Path: " + "$col[255,200,0]{" + res.name + "}" +
 											" \nMC: " + mc.floor(), UI.scale(400));
 								else
-									tooltip = RichText.render("Tile Resource Path: " + "$col[255,200,0]{" + res.name + "}", UI.scale(400));
+									tooltip = L10N.richtip("Tile Resource Path: " + "$col[255,200,0]{" + res.name + "}", UI.scale(400));
 								return;
 							}
 						} catch (Loading ignored){

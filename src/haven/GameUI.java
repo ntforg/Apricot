@@ -2250,7 +2250,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Notice.
 	else
 	    logged = new ChatUI.Channel.SimpleMessage(msg.message(), color);
 	if ((!noMsgTho && partyPermsOnLoginToggleSet && itemStackingOnLoginToggleSet) || msg.message().contains("siege")){
-		msgDeque.offerLast( new SysTimedMessage(RootWidget.msgfoundry.render(msg.message(), color), Utils.rtime()) );
+		msgDeque.offerLast( new SysTimedMessage(RootWidget.msgfoundry.render(L10N.msg(msg.message()), color), Utils.rtime()) );
 		syslog.append(logged);
 		if (!msg.message().contains("There are no claims under siege"))
 			ui.sfxrl(msg.sfx());
@@ -2278,7 +2278,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Notice.
 	}
 
 	public void optionInfoMsg(String msg, Color color, Audio.Clip sfx) {
-		msgDeque.offerLast( new SysTimedMessage(RootWidget.msgfoundry.render(msg, color), Utils.rtime()) );
+		msgDeque.offerLast( new SysTimedMessage(RootWidget.msgfoundry.render(L10N.msg(msg), color), Utils.rtime()) );
 		syslog.append(msg, color);
 		double now = Utils.rtime();
 		if(now - lastmsgsfx > 0.1) {

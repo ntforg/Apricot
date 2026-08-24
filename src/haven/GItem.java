@@ -633,7 +633,9 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 			return "it's null";
 		}
 		try {
-			return ItemInfo.find(ItemInfo.Name.class, info()).str.text;
+			/* The untranslated name: callers use this to recognize
+			 * particular items, so it must not follow the UI language. */
+			return ItemInfo.find(ItemInfo.Name.class, info()).original;
 		} catch (Exception ex) {
 			return "exception";
 		}

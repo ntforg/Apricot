@@ -204,6 +204,12 @@
     <copy todir="bin/midiFiles" >
       <fileset dir="midiFiles" includes="**"/>
     </copy>
+    <!-- Only the notes for translators: the dictionaries themselves ride
+         inside hafen.jar, and this directory is where players put the
+         overrides the updater must not overwrite. -->
+    <copy todir="bin/Translations" >
+      <fileset dir="Translations" includes="**"/>
+    </copy>
     <copy todir="bin" failonerror="false" quiet="true">
       <fileset dir="build">
 	<include name="hafen-panama.jar" />

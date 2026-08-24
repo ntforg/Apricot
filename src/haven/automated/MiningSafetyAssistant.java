@@ -42,7 +42,7 @@ public class MiningSafetyAssistant extends Window implements Runnable {
             }
         };
         prev = add(preventUnsafeMiningCheckBox, UI.scale(new Coord(10, 12)));
-        preventUnsafeMiningCheckBox.tooltip = RichText.render("This option will prevent selecting mining area even \npartially outside (visible) mining supports range. \n(Cannot select area outside view range)", UI.scale(300));
+        preventUnsafeMiningCheckBox.tooltip = L10N.richtip("This option will prevent selecting mining area even \npartially outside (visible) mining supports range. \n(Cannot select area outside view range)", UI.scale(300));
 
         stopUnsafeMiningCheckBox = new CheckBox("Stop unsafe mining.") {
             {a = Utils.getprefb("stopMiningWhenOutsideSupport", false);}
@@ -52,7 +52,7 @@ public class MiningSafetyAssistant extends Window implements Runnable {
             }
         };
         prev = add(stopUnsafeMiningCheckBox, prev.pos("bl").adds(0, 6));
-        stopUnsafeMiningCheckBox.tooltip = RichText.render("If currently mined tile is outside support range \nmining will stop. (Drinking animation overrides mining \nand delay bot reaction - not 100% safe)", UI.scale(300));
+        stopUnsafeMiningCheckBox.tooltip = L10N.richtip("If currently mined tile is outside support range \nmining will stop. (Drinking animation overrides mining \nand delay bot reaction - not 100% safe)", UI.scale(300));
 
         stopMiningFiftyCheckBox = new CheckBox("Stop mining <50.") {
             {a = Utils.getprefb("stopMiningFifty", false);}
@@ -62,7 +62,7 @@ public class MiningSafetyAssistant extends Window implements Runnable {
             }
         };
         prev = add(stopMiningFiftyCheckBox, prev.pos("bl").adds(0, 6));
-        stopMiningFiftyCheckBox.tooltip = RichText.render("If currently mined tile is withing support range \nbelow 50% hp mining will stop.", UI.scale(300));
+        stopMiningFiftyCheckBox.tooltip = L10N.richtip("If currently mined tile is withing support range \nbelow 50% hp mining will stop.", UI.scale(300));
 
 
         stopMiningTwentyFiveCheckBox = new CheckBox("Stop mining <25.") {
@@ -73,7 +73,7 @@ public class MiningSafetyAssistant extends Window implements Runnable {
             }
         };
         prev = add(stopMiningTwentyFiveCheckBox, prev.pos("bl").adds(0, 6));
-        stopMiningTwentyFiveCheckBox.tooltip = RichText.render("If currently mined tile is withing support range \nbelow 25% hp mining will stop.", UI.scale(300));
+        stopMiningTwentyFiveCheckBox.tooltip = L10N.richtip("If currently mined tile is withing support range \nbelow 25% hp mining will stop.", UI.scale(300));
 
         stopMiningLooseRockCHeckBox = new CheckBox("Stop mining near loose rock.") {
             {a = Utils.getprefb("stopMiningLooseRock", false);}
@@ -83,7 +83,7 @@ public class MiningSafetyAssistant extends Window implements Runnable {
             }
         };
         prev = add(stopMiningLooseRockCHeckBox, prev.pos("bl").adds(0, 6));
-        stopMiningLooseRockCHeckBox.tooltip = RichText.render("If currently mined tile is withing ~9 tiles from any \nloose rock mining will stop.", UI.scale(300));
+        stopMiningLooseRockCHeckBox.tooltip = L10N.richtip("If currently mined tile is withing ~9 tiles from any \nloose rock mining will stop.", UI.scale(300));
 
         prev = add(enableMineSweeperCheckBox = new CheckBox("Show Mine Sweeper Numbers"){
             {a = (Utils.getprefb("enableMineSweeper", true));}
@@ -92,13 +92,13 @@ public class MiningSafetyAssistant extends Window implements Runnable {
                 a = val;
             }
         }, prev.pos("bl").adds(0, 10));
-        enableMineSweeperCheckBox.tooltip = RichText.render("Enabling this will cause cave dust tiles to show the number of potential cave-ins surrounding them, just like in Minesweeper." +
+        enableMineSweeperCheckBox.tooltip = L10N.richtip("Enabling this will cause cave dust tiles to show the number of potential cave-ins surrounding them, just like in Minesweeper." +
                 "\n$col[218,163,0]{Note:} $col[185,185,185]{If a cave-in has been mined out, the tiles surrounding it will still drop cave dust, and they will still show a number on the ground. The cave dust tiles are pre-generated with the world. That's just how Loftar coded it.}" +
                 "\n$col[218,163,0]{Note:} $col[185,185,185]{You can still pick up the cave dust item off the ground. The numbers are affected only by the duration of the falling dust particles effect (aka dust rain), which can be set below}" +
                 "\n\n$col[200,0,0]{NOTE:} $col[185,185,185]{There's a bug with the falling dust particles, that we can't really \"fix\". If you mine them out on a level, the same particles can also show up on different levels or the overworld. If you want them to vanish, you can just relog, but they will despawn from their original location too.}", UI.scale(300));
 
         prev = add(new Label("Sweeper Display Duration (Min):"), prev.pos("bl").adds(0, 2));
-        prev.tooltip = RichText.render("Use this to set how long you want the numbers to be displayed on the ground, in minutes. The numbers will be visible as long as the dust particle effect stays on the tile." +
+        prev.tooltip = L10N.richtip("Use this to set how long you want the numbers to be displayed on the ground, in minutes. The numbers will be visible as long as the dust particle effect stays on the tile." +
                 "\n$col[218,163,0]{Note:} $col[185,185,185]{Changing this option will only affect the duration of newly spawned cave dust tiles. The duration is set once the wall tile is mined and the cave dust spawns in.}", UI.scale(300));
 
         add(sweeperDurationDropbox = new OldDropBox<Integer>(UI.scale(40), OptWnd.sweeperDurations.size(), UI.scale(17)) {

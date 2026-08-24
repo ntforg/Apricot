@@ -1584,7 +1584,7 @@ public class MiniMap extends Widget {
 				} else {
 					biomeText = prettybiome(biome);
 				}
-				biometex = Text.renderstroked(biomeText).tex();
+				biometex = Text.renderstroked(L10N.biome(biomeText)).tex();
 			}
 		} catch (Loading ignored) {
 		}
