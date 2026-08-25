@@ -32,6 +32,7 @@ public class StackAllItems implements Runnable {
             //Find a list of items of things we have at least 2 of
             Map<String, List<WItem>> itemsExisting = new HashMap<>();
             for (WItem wItem : inventory.getAllItems()) {
+                if (getInfoWithRetries(wItem) == null) continue; // ND: sprite still not constructed; getname() would return "exception" and misgroup it
                 String name = wItem.item.getname(); // ND: Matias was using the res name, but stuff like different types of meat use the same res path
 
                 // ND: If you try to click while the script is running, you MIGHT drop the last item you have on your cursor on the floor.
@@ -63,13 +64,16 @@ public class StackAllItems implements Runnable {
                 Map<WItem, Integer> stackSizes = new HashMap<>();
                 for (WItem wItem : similarItems) {
                     int amount = 1;
-                    for (ItemInfo info : wItem.info()) {
+                    List<ItemInfo> infos = getInfoWithRetries(wItem);
+                    if (infos == null) continue; // still loading; skip it rather than crash the thread
+                    for (ItemInfo info : infos) {
                         if (info instanceof GItem.Amount) {
                             amount = ((GItem.Amount)info).itemnum();
                         }
                     }
                     stackSizes.put(wItem, amount);
                 }
+                if (stackSizes.size() < 2) continue;
                 List<WItem> sortedByStackSize =
                         stackSizes.entrySet().stream()
                                 .sorted(Map.Entry.comparingByValue())
@@ -89,5 +93,18 @@ public class StackAllItems implements Runnable {
         } catch (InterruptedException e) {
             gui.error("Stack items script interrupted");
         }
+    }
+
+    // ND: info() throws Loading until the item's sprite is constructed by the UI thread,
+    // which can't be waitfor()'d (it's an unwaitable Loading), so poll briefly instead.
+    private static List<ItemInfo> getInfoWithRetries(WItem wItem) throws InterruptedException {
+        for (int retry = 0; retry < 50; retry++) {
+            try {
+                return wItem.info();
+            } catch (Loading l) {
+                Thread.sleep(10);
+            }
+        }
+        return null;
     }
 }
