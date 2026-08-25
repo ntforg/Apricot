@@ -11,13 +11,16 @@ import java.util.stream.Stream;
 import java.util.zip.*;
 
 /*
- * Self-updating for the packaged client. Downloading and unpacking a
- * new release happen inside the running client (see UpdateWindow); the
- * swap itself cannot, since this JVM holds hafen.jar open and Windows
- * will not let an open file be replaced. It is therefore handed to a
- * second JVM, started from a scratch copy of the new jar, which waits
- * for the client to exit, copies the staged files over the install and
- * starts the client again -- see main() below.
+ * Self-updating for the packaged client. Only the download happens
+ * inside the running client (see UpdateWindow); the swap itself
+ * cannot, since this JVM holds hafen.jar open and Windows will not let
+ * an open file be replaced, and unpacking must not either, since after
+ * a long session the client can be sitting right at its heap limit and
+ * even the unpacker's small buffers have produced OutOfMemoryError.
+ * Both are therefore handed to a second JVM with a fresh heap, started
+ * from a scratch copy of the running jar, which waits for the client
+ * to exit, unpacks the package, copies it over the install and starts
+ * the client again -- see main() below.
  *
  * Only installs that came from a release package and were started
  * through their own Play script update themselves. Steam keeps its own
@@ -42,6 +45,12 @@ public class Updater {
 	void status(String text, double frac);
 	boolean cancelled();
     }
+
+    /* For the helper process, which has nobody to report to. */
+    private static final Progress noprog = new Progress() {
+	    public void status(String text, double frac) {}
+	    public boolean cancelled() {return(false);}
+	};
 
     /* The runtime-less package: the install already has a jre/ that an
      * update must not clobber, and it is a fraction of the size of the
@@ -163,10 +172,20 @@ public class Updater {
 	return(zip);
     }
 
+    /* The one check worth making while the client can still show an
+     * error for it: that the package actually holds a client. It reads
+     * only the central directory, so it stays cheap even on a heap
+     * that has no room left to unpack in. */
+    public static void verify(Path zip) throws IOException {
+	try(ZipFile zf = new ZipFile(zip.toFile())) {
+	    if(zf.getEntry("hafen.jar") == null)
+		throw(new IOException("update package contains no hafen.jar"));
+	}
+    }
+
     /* Unpack beside the install rather than into it, so that a failed
      * or cancelled update never leaves the install half-replaced. */
-    public static Path unpack(Path zip, Progress prog) throws IOException {
-	Path stage = work().resolve("staging");
+    public static Path unpack(Path zip, Path stage, Progress prog) throws IOException {
 	rmtree(stage);
 	Files.createDirectories(stage);
 	try(ZipFile zf = new ZipFile(zip.toFile())) {
@@ -198,16 +217,18 @@ public class Updater {
     }
 
     /* Hand the swap to a second JVM, running from a scratch copy of the
-     * new jar so that nothing it needs lives in the directory it is
-     * about to rewrite. The client must exit right after this returns. */
-    public static void restart(String tag, Path stage) throws IOException {
+     * running jar so that nothing it needs lives in the directory it is
+     * about to rewrite. A file-to-file copy of an open jar is fine even
+     * on Windows, which only refuses writers. The client must exit
+     * right after this returns. */
+    public static void restart(String tag, Path zip) throws IOException {
 	Path dir = install();
 	Path jar = Files.createTempDirectory("apricot-update").resolve("apricot-update.jar");
-	Files.copy(stage.resolve("hafen.jar"), jar);
+	Files.copy(dir.resolve("hafen.jar"), jar);
 	List<String> cmd = new ArrayList<>(Arrays.asList(javabin(), "-cp", jar.toString(),
 							 "haven.Updater", "--apply",
 							 Long.toString(ProcessHandle.current().pid()),
-							 dir.toString(), stage.toString(), tag));
+							 dir.toString(), zip.toString(), tag));
 	cmd.addAll(relaunch(dir));
 	new ProcessBuilder(cmd)
 	    .directory(dir.toFile())
@@ -329,7 +350,7 @@ public class Updater {
 	}
 	try {
 	    long pid = Long.parseLong(args[1]);
-	    Path dir = Paths.get(args[2]), stage = Paths.get(args[3]);
+	    Path dir = Paths.get(args[2]), pkg = Paths.get(args[3]);
 	    String tag = args[4];
 	    List<String> cmd = new ArrayList<>(Arrays.asList(args).subList(5, args.length));
 	    Optional<ProcessHandle> proc = ProcessHandle.of(pid);
@@ -340,11 +361,31 @@ public class Updater {
 		    System.err.println("client " + pid + " did not exit: " + e);
 		}
 	    }
-	    copytree(stage, dir);
-	    Files.write(dir.resolve("launcher-version.txt"),
-			(tag + System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
-	    rmtree(stage);
-	    droppkgs(dir.resolve(workdir));
+	    Path work = dir.resolve(workdir);
+	    try {
+		/* A directory rather than a zip means an older client,
+		 * from before unpacking moved here, staged the unpacked
+		 * tree itself before handing over. */
+		Path stage = Files.isDirectory(pkg) ? pkg : unpack(pkg, work.resolve("staging"), noprog);
+		copytree(stage, dir);
+		Files.write(dir.resolve("launcher-version.txt"),
+			    (tag + System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
+		rmtree(stage);
+		droppkgs(work);
+	    } catch(Exception e) {
+		/* The install still starts: copytree puts the jar in
+		 * last, and unpack never touches the install at all. Drop
+		 * the package so the next launch downloads afresh rather
+		 * than retrying a bad one, and start the client back up
+		 * rather than leaving the player at an empty desktop. */
+		e.printStackTrace();
+		try {
+		    rmtree(work.resolve("staging"));
+		} catch(IOException | RuntimeException e2) {}
+		try {
+		    droppkgs(work);
+		} catch(IOException | RuntimeException e2) {}
+	    }
 	    new ProcessBuilder(cmd)
 		.directory(dir.toFile())
 		.redirectOutput(ProcessBuilder.Redirect.DISCARD)

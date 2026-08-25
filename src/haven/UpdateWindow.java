@@ -4,11 +4,11 @@ import java.nio.file.Path;
 
 /*
  * Installs a new release from the login screen: downloads the package
- * in the background, unpacks it beside the install and restarts the
- * client into it. LoginScreen shows this when a newer version is out
- * and Updater.possible(); when it is not -- Steam, or an install we
- * must not rewrite -- it falls back to a notice telling the player to
- * update by hand.
+ * in the background, then restarts the client through a helper process
+ * that unpacks and installs it (see Updater). LoginScreen shows this
+ * when a newer version is out and Updater.possible(); when it is not
+ * -- Steam, or an install we must not rewrite -- it falls back to a
+ * notice telling the player to update by hand.
  */
 public class UpdateWindow extends Window {
     private static final int width = UI.scale(340);
@@ -21,7 +21,7 @@ public class UpdateWindow extends Window {
     private volatile String stext = "Starting download...";
     private volatile double frac = 0.0;
     private volatile String error = null;
-    private volatile Path staged = null;
+    private volatile Path ready = null;
     private volatile boolean cancelled = false;
     private String shown = "", shownbtn = "";
     private double left = delay;
@@ -68,11 +68,18 @@ public class UpdateWindow extends Window {
 
     private void run() {
 	try {
-	    staged = Updater.unpack(Updater.download(tag, prog), prog);
+	    Path zip = Updater.download(tag, prog);
+	    Updater.verify(zip);
+	    ready = zip;
 	} catch(Updater.Cancelled e) {
 	    Updater.discard();
-	} catch(Exception e) {
+	} catch(Throwable e) {
+	    /* Throwable, not Exception: after a long session the heap
+	     * can be exhausted enough that even the download's one
+	     * buffer fails to allocate, and that should fail the update,
+	     * not the client. */
 	    error = errmsg(e);
+	    Updater.discard();
 	    new Warning(e, "could not install client update").issue();
 	}
     }
@@ -84,7 +91,7 @@ public class UpdateWindow extends Window {
 
     private void skip() {
 	cancelled = true;
-	staged = null;
+	ready = null;
 	Updater.skipped(true);
 	reqdestroy();
     }
@@ -115,7 +122,7 @@ public class UpdateWindow extends Window {
 	    say("Update failed: " + error, "Close");
 	} else if(restarting) {
 	    say("Restarting...", "Close");
-	} else if(staged != null) {
+	} else if(ready != null) {
 	    frac = 1.0;
 	    if((left -= dt) <= 0) {
 		restart();
@@ -130,10 +137,10 @@ public class UpdateWindow extends Window {
     private void restart() {
 	restarting = true;
 	try {
-	    Updater.restart(tag, staged);
+	    Updater.restart(tag, ready);
 	} catch(Exception e) {
 	    restarting = false;
-	    staged = null;
+	    ready = null;
 	    error = errmsg(e);
 	    new Warning(e, "could not start the client updater").issue();
 	    return;
