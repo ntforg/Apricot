@@ -622,7 +622,7 @@ public class LoginScreen extends Widget {
 			createFirstTimeUseWindow();
 		}
 		if (!githubVersionChecked && !Config.githubLatestVersion.equals("Loading...") && !Config.githubLatestVersion.equals("Failed")){
-			if (!Config.clientVersion.equals(Config.githubLatestVersion)) {
+			if (Config.isnewer(Config.githubLatestVersion, Config.clientVersion)) {
 				// Install it ourselves where we can; the notice is for
 				// installs that have to be updated by hand (Steam, and
 				// anything not started through its own Play script).

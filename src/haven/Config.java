@@ -50,6 +50,33 @@ public class Config {
 	public static final String clientVersion = "v1.85";
 	public static volatile String githubLatestVersion = "Loading...";
 
+	/* ND: Whether the published version is actually ahead of the one being
+	 * run. A plain inequality also fires on unreleased builds, which are
+	 * newer than the latest release rather than older, and would nag about
+	 * -- and, with auto-updates on, download -- an update that goes
+	 * backwards. Versions look like "v1.85", occasionally with a letter
+	 * suffix, as in "v1.64a"; anything that doesn't parse falls back to
+	 * the old any-difference behaviour. */
+	private static final java.util.regex.Pattern versionpat = java.util.regex.Pattern.compile("v?(\\d+)\\.(\\d+)([a-z]?)");
+	public static boolean isnewer(String version, String than) {
+	    int[] a = versionparts(version), b = versionparts(than);
+	    if((a == null) || (b == null))
+		return(!version.equals(than));
+	    for(int i = 0; i < a.length; i++) {
+		if(a[i] != b[i])
+		    return(a[i] > b[i]);
+	    }
+	    return(false);
+	}
+
+	private static int[] versionparts(String version) {
+	    java.util.regex.Matcher m = versionpat.matcher(version);
+	    if(!m.matches())
+		return(null);
+	    return(new int[] {Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)),
+			      m.group(3).isEmpty() ? 0 : (m.group(3).charAt(0) - 'a' + 1)});
+	}
+
     private static Config global = null;
     public static Config get() {
 	if(global != null)
