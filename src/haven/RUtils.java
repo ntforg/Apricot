@@ -59,20 +59,34 @@ public class RUtils {
 	    slot.remove();
     }
 
+    /* ND: Slots can be pulled out of the render tree by other threads while
+     * this is running (gob hiding, gobs leaving view, drawables being
+     * replaced, &c). Such a slot simply isn't ours to update any longer, so
+     * skip it instead of letting SlotRemoved escape. Letting it escape used
+     * to blow up as an "Unexpected non-local exit" error, since the
+     * reverting pass then tripped over the very same dead slot. Iterate a
+     * snapshot as well, since the removing thread mutates the slot
+     * collection as it goes. */
     public static void readd(Collection<Slot> slots, Consumer<Slot> add, Runnable revert) {
 	Collection<Slot> ch = new ArrayList<>(slots.size());
 	try {
-	    for(Slot slot : slots) {
+	    for(Slot slot : new ArrayList<>(slots)) {
 		ch.add(slot);
 		slot.clear();
-		add.accept(slot);
+		try {
+		    add.accept(slot);
+		} catch(RenderTree.SlotRemoved e) {
+		}
 	    }
 	} catch(RuntimeException e) {
 	    revert.run();
 	    try {
 		for(Slot slot : ch) {
 		    slot.clear();
-		    add.accept(slot);
+		    try {
+			add.accept(slot);
+		    } catch(RenderTree.SlotRemoved e2) {
+		    }
 		}
 	    } catch(RuntimeException e2) {
 		Error err = new Error("Unexpected non-local exit", e2);

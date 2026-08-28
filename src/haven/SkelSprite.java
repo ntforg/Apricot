@@ -44,7 +44,7 @@ public class SkelSprite extends Sprite implements Sprite.CUpd, EquipTarget, Spri
     public PoseMod[] mods = new PoseMod[0];
     public MeshAnim.Animation[] manims = new MeshAnim.Animation[0];
     public int curfl;
-    protected final Collection<RenderTree.Slot> slots = new ArrayList<>(1);
+    protected final Collection<RenderTree.Slot> slots = new java.util.concurrent.CopyOnWriteArrayList<>(); // ND: COW, since slots get added and removed from several loader threads at once.
     private Pose oldpose;
     private float ipold;
     private boolean stat = true;

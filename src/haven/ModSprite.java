@@ -44,7 +44,7 @@ public class ModSprite extends Sprite implements Sprite.CUpd, EquipTarget {
     public final Gob gob;
     public int flags = 0;
     protected final ResData resdata;
-    protected final Collection<RenderTree.Slot> slots = new ArrayList<>(1);
+    protected final Collection<RenderTree.Slot> slots = new java.util.concurrent.CopyOnWriteArrayList<>(); // ND: COW, since slots get added and removed from several loader threads at once.
     protected ArrayList<Mod> imods = null;
     protected RenderTree.Node[] parts = noparts;
     protected Ticker[] tickers = notickers;
