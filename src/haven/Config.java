@@ -47,7 +47,7 @@ public class Config {
     public static final Variable<Boolean> exp = Variable.propb("haven.experimental", false);
     public static final boolean windows = System.getProperty("os.name", "").startsWith("Windows");
     public final Properties localprops = getlocalprops(), userprops = getuserprops();
-	public static final String clientVersion = "v1.85";
+	public static final String clientVersion = "v1.86";
 	public static volatile String githubLatestVersion = "Loading...";
 
 	/* ND: Whether the published version is actually ahead of the one being
