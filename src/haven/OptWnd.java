@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.automated.cookbook.FoodService;
 import haven.automated.mapper.MappingClient;
 import haven.render.*;
 import haven.res.sfx.ambient.weather.wsound.WeatherSound;
@@ -4840,7 +4841,7 @@ public class OptWnd extends Window {
 	public static TextEntry liveLocationNameTextEntry;
 //	public static TextEntry webmapTokenTextEntry;
 
-	public static TextEntry cookBookEndpointTextEntry;
+	public static CheckBox cookBookContributeCheckBox;
 	public static TextEntry cookBookTokenTextEntry;
 
 
@@ -4885,20 +4886,21 @@ public class OptWnd extends Window {
 			liveLocationNameTextEntry.tooltip = liveLocationNameTooltip;
 
             prev = add(new Label("Cookbook Integration"), prev.pos("bl").adds(0, 26).x(110));
-			prev = add(new Label("Cookbook Endpoint:"), prev.pos("bl").adds(0, 16).x(0));
-			prev = add(cookBookEndpointTextEntry = new TextEntry(UI.scale(220), Utils.getpref("cookBookEndpoint", "")){
+			prev = add(cookBookContributeCheckBox = new CheckBox("Contribute food data to the public cookbook"){
+				{a = FoodService.isEnabled();}
+				public void changed(boolean val) {
+					Utils.setprefb(FoodService.ENABLED_PREF, val);
+				}
+			}, prev.pos("bl").adds(0, 16).x(0));
+			cookBookContributeCheckBox.tooltip = RichText.render("Sends the food you inspect to the public cookbook at $col[218,163,0]{cookbook.kittenrider.com}." +
+					"\nAn anonymous contributor token is registered automatically the first time.", UI.scale(300));
+			prev = add(new Label("Cookbook Token:"), prev.pos("bl").adds(0, 8).x(0));
+			prev = add(cookBookTokenTextEntry = new TextEntry(UI.scale(220), Utils.getpref(FoodService.TOKEN_PREF, "")){
 				protected void changed() {
-					Utils.setpref("cookBookEndpoint", this.buf.line());
+					Utils.setpref(FoodService.TOKEN_PREF, this.buf.line());
 					super.changed();
 				}
 			}, prev.pos("ur").adds(6, 0));
-			prev = add(new Label("Cookbook Token:"), prev.pos("bl").adds(0, 8).x(0));
-			prev = add(cookBookTokenTextEntry = new TextEntry(UI.scale(220), Utils.getpref("cookBookToken", "")){
-				protected void changed() {
-					Utils.setpref("cookBookToken", this.buf.line());
-					super.changed();
-				}
-			}, prev.pos("ur").adds(20, 0));
 
 			Widget backButton;
 			add(backButton = new PButton(UI.scale(200), "Back", 27, back, "Advanced Settings"), prev.pos("bl").adds(0, 26).x(0));
